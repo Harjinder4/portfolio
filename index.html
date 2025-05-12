@@ -29,6 +29,14 @@
       border-bottom: 1px solid #30363d;
       padding-top: 4rem;
       padding-bottom: 4rem;
+      position: relative;
+    }
+    header img.banner {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
     }
     h1 {
       font-size: 3rem;
@@ -92,6 +100,16 @@
     nav a:hover {
       color: #58a6ff;
     }
+    .img-box {
+      text-align: center;
+      margin: 1.5rem 0;
+    }
+    .img-box img {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 10px;
+      border: 1px solid #30363d;
+    }
   </style>
 </head>
 <body>
@@ -105,6 +123,7 @@
   </nav>
 
   <header>
+    <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c4?auto=format&fit=crop&w=1350&q=80" alt="Cybersecurity Banner" class="banner">
     <h1>Harjinder Singh</h1>
     <p class="highlight">Cybersecurity Analyst | CTF Competitor | VAPT & SOC Enthusiast</p>
   </header>
@@ -115,6 +134,9 @@
       I'm a cybersecurity professional with hands-on expertise in penetration testing, SOC operations,
       and threat analysis. I started out hacking games as a teenager and turned that passion into a career securing digital systems. I thrive in CTF competitions, build my own tools, and enjoy learning new ways to defend and break systems.
     </p>
+    <div class="img-box">
+      <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=1170&q=80" alt="About Harjinder">
+    </div>
   </section>
 
   <section id="experience">
@@ -140,6 +162,9 @@
       <li><strong>Home Lab Environment:</strong> Set up internal network with VPN, firewalls, and VMs for pentesting practice.</li>
       <li><strong>CTF Participation:</strong> Top 3 in multiple college CTFs; Top 10 in national contests.</li>
     </ul>
+    <div class="img-box">
+      <img src="https://images.unsplash.com/photo-1600267165864-c5f235cbe2a6?auto=format&fit=crop&w=1170&q=80" alt="Projects Screenshot">
+    </div>
   </section>
 
   <section id="certifications">
