@@ -6,12 +6,17 @@
   <title>Harjinder Singh | Cybersecurity Portfolio</title>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Fira Code', monospace;
-      background-color: #0e0e0e;
-      color: #33ff33;
+      background-color: #0d1117;
+      color: #c9d1d9;
       line-height: 1.6;
+      scroll-behavior: smooth;
     }
     header, section, footer {
       padding: 2rem;
@@ -20,92 +25,155 @@
     }
     header {
       text-align: center;
+      background-color: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding-top: 4rem;
+      padding-bottom: 4rem;
     }
-    h1 { font-size: 2.5rem; }
-    h2 { border-bottom: 1px solid #33ff33; padding-bottom: 0.5rem; margin-top: 2rem; }
-    a { color: #33ff33; text-decoration: none; }
-    .section-list { margin-top: 1rem; }
-    .section-list li { margin-bottom: 1rem; }
-    .contact a { display: block; margin: 0.5rem 0; }
+    h1 {
+      font-size: 3rem;
+      color: #58a6ff;
+    }
+    h2 {
+      color: #58a6ff;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 0.5rem;
+      margin-top: 2rem;
+    }
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .section-list {
+      margin-top: 1rem;
+      padding-left: 1rem;
+    }
+    .section-list li {
+      margin-bottom: 1rem;
+    }
+    .contact a {
+      display: block;
+      margin: 0.5rem 0;
+    }
     footer {
       text-align: center;
+      padding: 2rem;
+      border-top: 1px solid #30363d;
+      background-color: #161b22;
+      margin-top: 2rem;
+    }
+    .highlight {
+      background-color: #161b22;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      display: inline-block;
+      margin-top: 1rem;
+      color: #3fb950;
+      font-weight: bold;
+    }
+    nav {
+      background-color: #0d1117;
+      position: sticky;
+      top: 0;
       padding: 1rem;
-      border-top: 1px solid #33ff33;
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid #30363d;
+      z-index: 100;
+    }
+    nav a {
+      margin: 0 1rem;
+      font-weight: bold;
+      color: #c9d1d9;
+    }
+    nav a:hover {
+      color: #58a6ff;
     }
   </style>
 </head>
 <body>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#certifications">Certifications</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
   <header>
     <h1>Harjinder Singh</h1>
-    <p>Cybersecurity Analyst | SOC & VAPT Enthusiast | CTF Player</p>
+    <p class="highlight">Cybersecurity Analyst | CTF Competitor | VAPT & SOC Enthusiast</p>
   </header>
 
-  <section>
+  <section id="about">
     <h2>About Me</h2>
     <p>
-      Cybersecurity professional with a strong background in penetration testing, SOC operations,
-      and threat analysis. From hacking games as a kid to competing in CTFs and securing enterprise
-      systems, I bring passion and technical depth to every challenge.
+      I'm a cybersecurity professional with hands-on expertise in penetration testing, SOC operations,
+      and threat analysis. I started out hacking games as a teenager and turned that passion into a career securing digital systems. I thrive in CTF competitions, build my own tools, and enjoy learning new ways to defend and break systems.
     </p>
   </section>
 
-  <section>
+  <section id="experience">
     <h2>Experience</h2>
     <ul class="section-list">
-      <li><strong>Trainee Security Analyst – Cynox Security LLP</strong><br>
-        Conducted VAPT on 15+ infrastructures, authored 10+ reports, and enhanced client security by 40%.</li>
-      <li><strong>Cyber Warrior Intern – GPCSSI (Haryana Police)</strong><br>
-        Built IP Analyzer with 98% detection accuracy and simulated phishing/ransomware attacks.</li>
-      <li><strong>Security Analyst Intern – CyberYaan</strong><br>
-        Developed awareness programs, performed malware analysis and ethical hacking exercises.</li>
-      <li><strong>IT Support Technician – G.S. Fastners</strong><br>
-        Maintained 98% uptime across Windows and networking systems.</li>
+      <li><strong>Cynox Security LLP (Trainee Security Analyst)</strong><br>
+        Led VAPT assessments for 15+ clients, created detailed audit reports, and improved threat detection speed by 30%.</li>
+      <li><strong>GPCSSI - Haryana Police (Cyber Warrior Intern)</strong><br>
+        Developed an IP Activity Analyzer tool (98% accuracy) and simulated phishing/ransomware attacks for response testing.</li>
+      <li><strong>CyberYaan (Security Analyst Intern)</strong><br>
+        Created cybersecurity training content, conducted malware analysis, and worked on network security.</li>
+      <li><strong>G.S. Fastners (IT Support Technician)</strong><br>
+        Provided technical support across departments, ensured 98% uptime, and maintained endpoint systems.</li>
     </ul>
   </section>
 
-  <section>
+  <section id="projects">
     <h2>Projects</h2>
     <ul class="section-list">
-      <li><strong>ESP8266 Wi-Fi Pineapple Clone:</strong> Simulated rogue AP for phishing & Wi-Fi testing.</li>
-      <li><strong>USB Rubber Ducky Payloads:</strong> Custom payloads using Raspberry Pi Pico.</li>
-      <li><strong>Server & Cloud Security Setup:</strong> Hardened Linux servers, maintained 98% uptime, 86 CIS score.</li>
-      <li><strong>Home Lab:</strong> Personal pentesting network for skill refinement and tool testing.</li>
-      <li><strong>CTFs:</strong> Ranked Top 3 in university, Top 10 nationally in multiple events.</li>
+      <li><strong>Wi-Fi Pineapple Clone (ESP8266):</strong> Simulated rogue access points for phishing awareness testing.</li>
+      <li><strong>USB Rubber Ducky Payloads:</strong> Crafted HID payloads using Raspberry Pi Pico for awareness and endpoint testing.</li>
+      <li><strong>Linux Server Hardening:</strong> Secured academic lab servers, achieved 86 CIS score with continuous patching.</li>
+      <li><strong>Home Lab Environment:</strong> Set up internal network with VPN, firewalls, and VMs for pentesting practice.</li>
+      <li><strong>CTF Participation:</strong> Top 3 in multiple college CTFs; Top 10 in national contests.</li>
     </ul>
   </section>
 
-  <section>
+  <section id="certifications">
     <h2>Certifications</h2>
     <ul class="section-list">
-      <li>CEH Practical (EC-Council)</li>
-      <li>ISC2 Certified in Cybersecurity (CC)</li>
+      <li>CEH Practical – EC-Council (Jan 2025)</li>
+      <li>Certified in Cybersecurity – ISC2 (Feb 2025)</li>
       <li>Google Cybersecurity Professional Certificate</li>
-      <li>TryHackMe Junior Penetration Tester</li>
+      <li>TryHackMe: Junior Penetration Tester</li>
       <li>Microsoft Career Essentials in Cybersecurity</li>
-      <li>30+ more listed on <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">LinkedIn</a></li>
+      <li>+ 30 more on <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">LinkedIn</a></li>
     </ul>
   </section>
 
-  <section>
+  <section id="skills">
     <h2>Technical Skills</h2>
     <ul class="section-list">
-      <li><strong>Offensive:</strong> Metasploit, Burp Suite, Nmap, Wireshark</li>
-      <li><strong>Defensive:</strong> SIEM (Splunk), IDS/IPS, Firewalls</li>
-      <li><strong>Languages:</strong> Python, Bash, SQL, C++</li>
-      <li><strong>Cloud:</strong> GCP (IAM), Linux Server Hardening</li>
-      <li><strong>Standards:</strong> NIST CSF, ISO 27001, OWASP Top 10, MITRE ATT&CK</li>
+      <li><strong>Offensive Security:</strong> Burp Suite, Metasploit, Nmap, Wireshark, Payload Dev</li>
+      <li><strong>Defensive Security:</strong> Splunk, TheHive, IDS/IPS, Threat Hunting, Firewalls</li>
+      <li><strong>Programming & Scripting:</strong> Python, Bash, SQL, C++</li>
+      <li><strong>Cloud & OS:</strong> GCP IAM, Linux Server Hardening</li>
+      <li><strong>Frameworks:</strong> NIST CSF, MITRE ATT&CK, ISO 27001, OWASP Top 10, DRP/BCP</li>
     </ul>
   </section>
 
-  <section class="contact">
+  <section id="contact">
     <h2>Contact</h2>
-    <a href="mailto:harjinder.khalsa4@gmail.com">harjinder.khalsa4@gmail.com</a>
-    <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">LinkedIn</a>
-    <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank">TryHackMe</a>
+    <a href="mailto:harjinder.khalsa4@gmail.com">📧 harjinder.khalsa4@gmail.com</a>
+    <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">🔗 LinkedIn Profile</a>
+    <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank">🧠 TryHackMe Profile</a>
   </section>
 
   <footer>
-    &copy; 2025 Harjinder Singh | Cybersecurity Portfolio
+    &copy; 2025 Harjinder Singh | Designed with ❤️ and Terminal Aesthetic
   </footer>
 </body>
 </html>
