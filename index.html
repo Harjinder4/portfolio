@@ -3,202 +3,371 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harjinder Singh | Cybersecurity Portfolio</title>
+  <title>Harjinder Singh | ./portfolio.sh</title>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
   <style>
     * {
-      margin: 0;
-      padding: 0;
       box-sizing: border-box;
     }
-    body {
-      font-family: 'Fira Code', monospace;
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       background-color: #0d1117;
       color: #c9d1d9;
-      line-height: 1.6;
+      font-family: 'Fira Code', monospace;
+      font-size: 1rem;
+    }
+    /* Main terminal container */
+    #terminal {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      overflow-y: auto;
       scroll-behavior: smooth;
     }
-    header, section, footer {
-      padding: 2rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-    header {
-      text-align: center;
-      background-color: #161b22;
-      border-bottom: 1px solid #30363d;
-      padding-top: 4rem;
-      padding-bottom: 4rem;
-      position: relative;
-    }
-    header img.banner {
+    /* Area for all command outputs */
+    #terminal-output {
       width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
     }
-    h1 {
-      font-size: 3rem;
+    /* A single line of output */
+    .output-line {
+      width: 100%;
+      white-space: pre-wrap; /* Preserve newlines and spaces */
+      word-wrap: break-word; /* Break long lines */
+    }
+    /* The command line (prompt + input) */
+    .command-line-container {
+      display: flex;
+      width: 100%;
+    }
+    .prompt {
+      color: #3fb950; /* Hacker green */
+      margin-right: 8px;
+      white-space: nowrap; /* Don't wrap the prompt */
+    }
+    /* The actual <input> field */
+    #terminal-input {
+      flex-grow: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #c9d1d9;
+      font-family: 'Fira Code', monospace;
+      font-size: 1rem;
+      padding: 0;
+    }
+    
+    /* STYLING FOR COMMAND OUTPUTS */
+    
+    /* For 'help' and 'ls' - file/command lists */
+    .command-list {
+      color: #58a6ff; /* Blue for files/commands */
+      display: inline-block;
+      margin-right: 1.5rem; /* Space out the list */
+      min-width: 120px; /* Align them a bit */
+    }
+    /* For headers like '--- Experience ---' */
+    .output-header {
       color: #58a6ff;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
     }
-    h2 {
+    /* For links */
+    .output-line a {
       color: #58a6ff;
-      border-bottom: 1px solid #30363d;
-      padding-bottom: 0.5rem;
-      margin-top: 2rem;
-    }
-    a {
-      color: #58a6ff;
-      text-decoration: none;
-    }
-    a:hover {
       text-decoration: underline;
     }
-    .section-list {
-      margin-top: 1rem;
+    /* For list items like projects/skills */
+    .output-list-item {
       padding-left: 1rem;
+      position: relative;
     }
-    .section-list li {
-      margin-bottom: 1rem;
-    }
-    .contact a {
-      display: block;
-      margin: 0.5rem 0;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      border-top: 1px solid #30363d;
-      background-color: #161b22;
-      margin-top: 2rem;
-    }
-    .highlight {
-      background-color: #161b22;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      display: inline-block;
-      margin-top: 1rem;
+    /* The '*' bullet */
+    .output-list-item::before {
+      content: '*';
       color: #3fb950;
-      font-weight: bold;
+      position: absolute;
+      left: 0;
     }
-    nav {
-      background-color: #0d1117;
-      position: sticky;
-      top: 0;
-      padding: 1rem;
-      display: flex;
-      justify-content: center;
-      border-bottom: 1px solid #30363d;
-      z-index: 100;
+    /* Error messages */
+    .output-error {
+      color: #f85149; /* Red */
     }
-    nav a {
-      margin: 0 1rem;
-      font-weight: bold;
+    /* The user's own typed command */
+    .user-command {
       color: #c9d1d9;
     }
-    nav a:hover {
+    /* ASCII Art */
+    .ascii-art {
       color: #58a6ff;
+      font-size: 0.85rem;
+      line-height: 1.2;
     }
-    .img-box {
-      text-align: center;
-      margin: 1.5rem 0;
-    }
-    .img-box img {
-      width: 100%;
-      max-width: 800px;
-      border-radius: 10px;
-      border: 1px solid #30363d;
-    }
+
   </style>
 </head>
 <body>
-  <nav>
-    <a href="#about">About</a>
-    <a href="#experience">Experience</a>
-    <a href="#projects">Projects</a>
-    <a href="#certifications">Certifications</a>
-    <a href="#skills">Skills</a>
-    <a href="#contact">Contact</a>
-  </nav>
 
-  <header>
-    <img src="https://raw.githubusercontent.com/Harjinder4/portfolio/refs/heads/main/Presentation1.jpg" alt="Cybersecurity Banner" class="banner">
-    <h1>Harjinder Singh</h1>
-    <p class="highlight">Cybersecurity Analyst | CTF Competitor | VAPT & SOC Enthusiast</p>
-  </header>
-
-  <section id="about">
-    <h2>About Me</h2>
-    <p>
-      I'm a cybersecurity professional with hands-on expertise in penetration testing, SOC operations,
-      and threat analysis. I started out hacking games as a teenager and turned that passion into a career securing digital systems. I thrive in CTF competitions, build my own tools, and enjoy learning new ways to defend and break systems.
-    </p>
-    <div class="img-box">
-      <img src="https://raw.githubusercontent.com/Harjinder4/portfolio/refs/heads/main/IMG_20250218_104445.jpg" alt="About Harjinder">
+  <div id="terminal" onclick="focusInput()">
+    <div id="terminal-output">
+      </div>
+    
+    <div class="command-line-container">
+      <span class="prompt">guest@harjinder.dev:~$</span>
+      <input type="text" id="terminal-input" autofocus />
     </div>
-  </section>
+  </div>
 
-  <section id="experience">
-    <h2>Experience</h2>
-    <ul class="section-list">
-      <li><strong>Cynox Security LLP (Trainee Security Analyst)</strong><br>
-        Led VAPT assessments for 15+ clients, created detailed audit reports, and improved threat detection speed by 30%.</li>
-      <li><strong>GPCSSI - Haryana Police (Cyber Warrior Intern)</strong><br>
-        Developed an IP Activity Analyzer tool (98% accuracy) and simulated phishing/ransomware attacks for response testing.</li>
-      <li><strong>CyberYaan (Security Analyst Intern)</strong><br>
-        Created cybersecurity training content, conducted malware analysis, and worked on network security.</li>
-      <li><strong>G.S. Fastners (IT Support Technician)</strong><br>
-        Provided technical support across departments, ensured 98% uptime, and maintained endpoint systems.</li>
-    </ul>
-  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const output = document.getElementById('terminal-output');
+      const input = document.getElementById('terminal-input');
+      const terminal = document.getElementById('terminal');
+      
+      const prompt = 'guest@harjinder.dev:~$';
+      const promptElement = document.querySelector('.prompt');
 
-  <section id="projects">
-    <h2>Projects</h2>
-    <ul class="section-list">
-      <li><strong>Wi-Fi Pineapple Clone (ESP8266):</strong> Simulated rogue access points for phishing awareness testing.</li>
-      <li><strong>USB Rubber Ducky Payloads:</strong> Crafted HID payloads using Raspberry Pi Pico for awareness and endpoint testing.</li>
-      <li><strong>Linux Server Hardening:</strong> Secured academic lab servers, achieved 86 CIS score with continuous patching.</li>
-      <li><strong>Home Lab Environment:</strong> Set up internal network with VPN, firewalls, and VMs for pentesting practice.</li>
-      <li><strong>CTF Participation:</strong> Top 3 in multiple college CTFs; Top 10 in national contests.</li>
-    </ul>
-    <div class="img-box">
-      <img src="https://images.unsplash.com/photo-1600267165864-c5f235cbe2a6?auto=format&fit=crop&w=1170&q=80" alt="Projects Screenshot">
-    </div>
-  </section>
+      // --- YOUR PORTFOLIO CONTENT, REFORMATTED FOR A TERMINAL ---
+      
+      const welcomeMessage = `
+<pre class="ascii-art">
+  _   _   _____
+ |█| |█| / ___ \\
+_|█|_|█|_\\ \\_ \\/_
+█████████████████
+ |█| |█| /\\__/ /
+ |█| |█| \\____/ 
+</pre>
 
-  <section id="certifications">
-    <h2>Certifications</h2>
-    <ul class="section-list">
-      <li>CEH Practical – EC-Council (Jan 2025)</li>
-      <li>Certified in Cybersecurity – ISC2 (Feb 2025)</li>
-      <li>Google Cybersecurity Professional Certificate</li>
-      <li>TryHackMe: Junior Penetration Tester</li>
-      <li>Microsoft Career Essentials in Cybersecurity</li>
-      <li>+ 30 more on <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">LinkedIn</a></li>
-    </ul>
-  </section>
+Boot sequence complete. v1.0.0-HS
+Welcome to Harjinder Singh's interactive portfolio.
+Type <strong>help</strong> to see the list of available commands.
+Type <strong>banner</strong> to see the full header.
+`;
 
-  <section id="skills">
-    <h2>Technical Skills</h2>
-    <ul class="section-list">
-      <li><strong>Offensive Security:</strong> Burp Suite, Metasploit, Nmap, Wireshark, Payload Dev</li>
-      <li><strong>Defensive Security:</strong> Splunk, TheHive, IDS/IPS, Threat Hunting, Firewalls</li>
-      <li><strong>Programming & Scripting:</strong> Python, Bash, SQL, C++</li>
-      <li><strong>Cloud & OS:</strong> GCP IAM, Linux Server Hardening</li>
-      <li><strong>Frameworks:</strong> NIST CSF, MITRE ATT&CK, ISO 27001, OWASP Top 10, DRP/BCP</li>
-    </ul>
-  </section>
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <a href="mailto:harjinder.khalsa4@gmail.com">📧 harjinder.khalsa4@gmail.com</a>
-    <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">🔗 LinkedIn Profile</a>
-    <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank">🧠 TryHackMe Profile</a>
-  </section>
+      const allCommands = {
+        'help': `
+<div class="output-header">COMMAND HELP</div>
+Usage: [command]
 
-  <footer>
-    &copy; 2025 Harjinder Singh | Designed with ❤️ and Terminal Aesthetic
-  </footer>
+<strong>Core Commands:</strong>
+  <span class="command-list">about</span>         Who is Harjinder Singh?
+  <span class="command-list">experience</span>    View professional experience.
+  <span class="command-list">projects</span>      See list of projects.
+  <span class="command-list">skills</span>        List technical skills.
+  <span class="command-list">certs</span>         List certifications.
+  <span class="command-list">contact</span>       Display contact information.
+
+<strong>Utility:</strong>
+  <span class="command-list">help</span>          Show this help menu.
+  <span class="command-list">banner</span>        Display the welcome banner.
+  <span class="command-list">ls</span>            List available commands.
+  <span class="command-list">clear</span>         Clear the terminal screen.
+  <span class="command-list">echo [text]</span>   Prints text.
+`,
+        'about': `
+<div class="output-header">--- About Me ---</div>
+I'm a cybersecurity professional with hands-on expertise in penetration testing, SOC operations, and threat analysis. 
+I started out hacking games as a teenager and turned that passion into a career securing digital systems. 
+I thrive in CTF competitions, build my own tools, and enjoy learning new ways to defend and break systems.
+`,
+        'experience': `
+<div class="output-header">--- Experience ---</div>
+<div class="output-list-item"><strong>Cynox Security LLP (Trainee Security Analyst)</strong><br>  Led VAPT assessments for 15+ clients, created detailed audit reports, and improved threat detection speed by 30%.</div>
+<div class="output-list-item"><strong>GPCSSI - Haryana Police (Cyber Warrior Intern)</strong><br>  Developed an IP Activity Analyzer tool (98% accuracy) and simulated phishing/ransomware attacks for response testing.</div>
+<div class="output-list-item"><strong>CyberYaan (Security Analyst Intern)</strong><br>  Created cybersecurity training content, conducted malware analysis, and worked on network security.</div>
+<div class="output-list-item"><strong>G.S. Fastners (IT Support Technician)</strong><br>  Provided technical support across departments, ensured 98% uptime, and maintained endpoint systems.</div>
+`,
+        'projects': `
+<div class="output-header">--- Projects ---</div>
+<div class="output-list-item"><strong>Wi-Fi Pineapple Clone (ESP8266):</strong> Simulated rogue access points for phishing awareness testing.</div>
+<div class="output-list-item"><strong>USB Rubber Ducky Payloads:</strong> Crafted HID payloads using Raspberry Pi Pico for awareness and endpoint testing.</div>
+<div class="output-list-item"><strong>Linux Server Hardening:</strong> Secured academic lab servers, achieved 86 CIS score with continuous patching.</div>
+<div class="output-list-item"><strong>Home Lab Environment:</strong> Set up internal network with VPN, firewalls, and VMs for pentesting practice.</div>
+<div class="output-list-item"><strong>CTF Participation:</strong> Top 3 in multiple college CTFs; Top 10 in national contests.</div>
+`,
+        'certs': `
+<div class="output-header">--- Certifications ---</div>
+<div class="output-list-item">CEH Practical – EC-Council (Jan 2025)</div>
+<div class="output-list-item">Certified in Cybersecurity – ISC2 (Feb 2025)</div>
+<div class="output-list-item">Google Cybersecurity Professional Certificate</div>
+<div class="output-list-item">TryHackMe: Junior Penetration Tester</div>
+<div class="output-list-item">Microsoft Career Essentials in Cybersecurity</div>
+<div class="output-list-item">+ 30 more on <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">LinkedIn</a></div>
+`,
+        'skills': `
+<div class="output-header">--- Technical Skills ---</div>
+<div class="output-list-item"><strong>Offensive Security:</strong> Burp Suite, Metasploit, Nmap, Wireshark, Payload Dev</div>
+<div class="output-list-item"><strong>Defensive Security:</strong> Splunk, TheHive, IDS/IPS, Threat Hunting, Firewalls</div>
+<div class="output-list-item"><strong>Programming & Scripting:</strong> Python, Bash, SQL, C++</div>
+<div class="output-list-item"><strong>Cloud & OS:</strong> GCP IAM, Linux Server Hardening</div>
+<div class="output-list-item"><strong>Frameworks:</strong> NIST CSF, MITRE ATT&CK, ISO 27001, OWASP Top 10, DRP/BCP</div>
+`,
+        'contact': `
+<div class="output-header">--- Contact ---</div>
+<div class="output-list-item"><strong>Email:</strong> <a href="mailto:harjinder.khalsa4@gmail.com">harjinder.khalsa4@gmail.com</a></div>
+<div class="output-list-item"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">linkedin.com/in/h4rj1nd3r51ngh</a></div>
+<div class="output-list-item"><strong>TryHackMe:</strong> <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank">tryhackme.com/p/h4rj1nd3r51ngh</a></div>
+`,
+        'ls': `
+<span class="command-list">about</span>
+<span class="command-list">experience</span>
+<span class="command-list">projects</span>
+<span class="command-list">skills</span>
+<span class="command-list">certs</span>
+<span class="command-list">contact</span>
+`,
+        'banner': welcomeMessage
+      };
+      
+      // --- END OF CONTENT ---
+
+      // --- TERMINAL LOGIC ---
+      
+      // History for up/down arrows
+      const commandHistory = [];
+      let historyIndex = -1;
+
+      // Initial boot sequence
+      function boot() {
+        printToTerminal(welcomeMessage, 'output-line');
+      }
+
+      // Handle key presses
+      input.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'Enter':
+            e.preventDefault(); // Stop form submission
+            const commandText = input.value.trim();
+            if (commandText) {
+              // Add to history
+              commandHistory.push(commandText);
+              historyIndex = commandHistory.length;
+              
+              // Print the command they just typed
+              printToTerminal(`${prompt} ${commandText}`, 'user-command');
+              
+              // Process and execute
+              processCommand(commandText);
+              
+              // Clear input
+              input.value = '';
+            }
+            break;
+            
+          case 'ArrowUp':
+            e.preventDefault();
+            if (historyIndex > 0) {
+              historyIndex--;
+              input.value = commandHistory[historyIndex];
+              input.setSelectionRange(input.value.length, input.value.length); // Move cursor to end
+            }
+            break;
+            
+          case 'ArrowDown':
+            e.preventDefault();
+            if (historyIndex < commandHistory.length - 1) {
+              historyIndex++;
+              input.value = commandHistory[historyIndex];
+              input.setSelectionRange(input.value.length, input.value.length);
+            } else {
+              // At the bottom of history, clear input
+              historyIndex = commandHistory.length;
+              input.value = '';
+            }
+            break;
+        }
+        
+        // Always scroll to the bottom after any command
+        scrollToBottom();
+      });
+
+      // Process the command
+      function processCommand(command) {
+        const parts = command.split(' ');
+        const cmd = parts[0].toLowerCase();
+        const args = parts.slice(1);
+
+        switch (cmd) {
+          case 'help':
+            printToTerminal(allCommands.help, 'output-line');
+            break;
+          case 'about':
+            printToTerminal(allCommands.about, 'output-line');
+            break;
+          case 'experience':
+            printToTerminal(allCommands.experience, 'output-line');
+            break;
+          case 'projects':
+            printToTerminal(allCommands.projects, 'output-line');
+            break;
+          case 'certs':
+            printToTerminal(allCommands.certs, 'output-line');
+            break;
+          case 'skills':
+            printToTerminal(allCommands.skills, 'output-line');
+            break;
+          case 'contact':
+            printToTerminal(allCommands.contact, 'output-line');
+            break;
+          case 'ls':
+            printToTerminal(allCommands.ls, 'output-line');
+            break;
+          case 'banner':
+            printToTerminal(allCommands.banner, 'output-line');
+            break;
+          case 'clear':
+            output.innerHTML = ''; // Clear all output
+            break;
+          
+          // Easter Egg commands
+          case 'echo':
+            printToTerminal(args.join(' ') || '', 'output-line');
+            break;
+          case 'whoami':
+            printToTerminal('guest', 'output-line');
+            break;
+          case 'sudo':
+            printToTerminal(`User "guest" is not in the sudoers file. This incident will be reported.`, 'output-error');
+            break;
+            
+          default:
+            printToTerminal(`-bash: ${command}: command not found`, 'output-error');
+            break;
+        }
+      }
+
+      // Helper function to print a new line to the output
+      function printToTerminal(text, className) {
+        const line = document.createElement('div');
+        line.className = className;
+        line.innerHTML = text; // Use innerHTML to render links, etc.
+        output.appendChild(line);
+      }
+      
+      // Helper to always scroll to the bottom
+      function scrollToBottom() {
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+      
+      // Helper to focus the input if user clicks anywhere on terminal
+      terminal.addEventListener('click', () => {
+        input.focus();
+      });
+      
+      // Start the terminal
+      boot();
+      
+    });
+    
+    // Global helper so onclick in HTML works
+    function focusInput() {
+      document.getElementById('terminal-input').focus();
+    }
+  </script>
 </body>
 </html>
