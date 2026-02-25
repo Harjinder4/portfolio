@@ -1,373 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harjinder Singh | ./portfolio.sh</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #0d1117;
-      color: #c9d1d9;
-      font-family: 'Fira Code', monospace;
-      font-size: 1rem;
-    }
-    /* Main terminal container */
-    #terminal {
-      width: 100%;
-      height: 100%;
-      padding: 10px;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-    }
-    /* Area for all command outputs */
-    #terminal-output {
-      width: 100%;
-    }
-    /* A single line of output */
-    .output-line {
-      width: 100%;
-      white-space: pre-wrap; /* Preserve newlines and spaces */
-      word-wrap: break-word; /* Break long lines */
-    }
-    /* The command line (prompt + input) */
-    .command-line-container {
-      display: flex;
-      width: 100%;
-    }
-    .prompt {
-      color: #3fb950; /* Hacker green */
-      margin-right: 8px;
-      white-space: nowrap; /* Don't wrap the prompt */
-    }
-    /* The actual <input> field */
-    #terminal-input {
-      flex-grow: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #c9d1d9;
-      font-family: 'Fira Code', monospace;
-      font-size: 1rem;
-      padding: 0;
-    }
-    
-    /* STYLING FOR COMMAND OUTPUTS */
-    
-    /* For 'help' and 'ls' - file/command lists */
-    .command-list {
-      color: #58a6ff; /* Blue for files/commands */
-      display: inline-block;
-      margin-right: 1.5rem; /* Space out the list */
-      min-width: 120px; /* Align them a bit */
-    }
-    /* For headers like '--- Experience ---' */
-    .output-header {
-      color: #58a6ff;
-      font-weight: bold;
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    /* For links */
-    .output-line a {
-      color: #58a6ff;
-      text-decoration: underline;
-    }
-    /* For list items like projects/skills */
-    .output-list-item {
-      padding-left: 1rem;
-      position: relative;
-    }
-    /* The '*' bullet */
-    .output-list-item::before {
-      content: '*';
-      color: #3fb950;
-      position: absolute;
-      left: 0;
-    }
-    /* Error messages */
-    .output-error {
-      color: #f85149; /* Red */
-    }
-    /* The user's own typed command */
-    .user-command {
-      color: #c9d1d9;
-    }
-    /* ASCII Art */
-    .ascii-art {
-      color: #58a6ff;
-      font-size: 0.85rem;
-      line-height: 1.2;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harjinder Singh - Panzer C2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            background: #0a0a23;
+            color: #e0e0e0;
+            display: flex;
+            min-height: 100vh;
+        }
 
-  </style>
+        .sidebar {
+            width: 240px;
+            background: #071228;
+            padding: 20px;
+            box-sizing: border-box;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+            border-right: 1px solid #16213e;
+        }
+        .sidebar h2{
+            color:#00aaff;
+            font-size:18px;
+            margin-bottom:12px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .sidebar ul{ list-style:none;padding:0;margin:10px 0; }
+        .sidebar li{ margin:8px 0; }
+        .sidebar a{ display:flex;gap:10px;align-items:center;color:#a8cfff;text-decoration:none;padding:8px;border-radius:6px;transition:background .12s,color .12s; }
+        .sidebar a i{ width:20px; text-align:center; color:#66d1ff }
+        .sidebar a:hover{ background: rgba(0,170,255,0.06); color:#e6f7ff }
+        .sidebar a.active{ background: linear-gradient(90deg, rgba(0,170,255,0.06), rgba(0,170,255,0.03)); color:#e6f7ff; box-shadow: inset 3px 0 0 0 #00aaff }
+        /* collapse behavior for small screens */
+        .sidebar-toggle{ display:none; position:fixed; left:8px; top:8px; background:#00aaff;color:#071228;border:none;padding:8px;border-radius:6px; z-index:1000 }
+        @media(max-width:900px){ .sidebar{ transform:translateX(-100%); transition:transform .22s ease } .sidebar.open{ transform:translateX(0) } .sidebar-toggle{ display:block } .main-content{ margin-left:0 } }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background: #1a1a2e;
+            padding: 20px;
+            border-bottom: 2px solid #00aaff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            color: #00aaff;
+        }
+        /* audio removed - UI and engine stripped per user request */
+        .dashboard {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        /* panels styled later for unified dark gradient */
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .online { background: #00ff88; color: #0a0a23; }
+        .offline { background: #ff4444; color: #e0e0e0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #16213e;
+        }
+        th {
+            color: #00aaff;
+        }
+        .terminal {
+            background: #0a0a23;
+            border: 1px solid #16213e;
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            font-family: monospace;
+            color: #e0e0e0;
+        }
+        .input-group {
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            width: calc(100% - 60px);
+            background: #16213e;
+            border: 1px solid #00aaff;
+            color: #e0e0e0;
+            padding: 5px;
+        }
+        input[type="text"]:focus {
+            border-color: #00aaff;
+            outline: none;
+        }
+        button {
+            background: #00aaff;
+            color: #0a0a23;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #0088cc;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .grid div {
+            text-align: center;
+            padding: 20px;
+            background: #16213e;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .grid div:hover {
+            background: #00aaff;
+            color: #0a0a23;
+        }
+        .easter-egg {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: #00aaff;
+            cursor: pointer;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #16213e;
+            color: #e0e0e0;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #16213e;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #00aaff;
+            width: 0%;
+            transition: width 0.1s;
+        }
+        .webshell-item {
+            background: #16213e;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 4px rgba(0,170,255,0.08); }
+            50% { box-shadow: 0 0 16px rgba(0,170,255,0.12); }
+            100% { box-shadow: 0 0 4px rgba(0,170,255,0.08); }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(18px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(180deg); }
+        }
+        .panel {
+            background: linear-gradient(180deg,#0b1220 0%, #0a0f1a 100%);
+            border: 1px solid #16213e;
+            border-radius: 6px;
+            margin-bottom: 22px;
+            padding: 18px;
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            animation: slideIn 0.42s ease-out;
+            will-change: transform, box-shadow;
+            position: relative;
+            z-index: 1;
+        }
+        /* Use a focused class to avoid continuous pulsing and prevent overlap issues */
+        .panel.focused {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,170,255,0.12);
+            border-color: #00aaff;
+            z-index: 50;
+        }
+        .panel:hover {
+            border-color: #00aaff;
+        }
+        .panel h3 i {
+            transition: transform 0.6s ease;
+            display: inline-block;
+        }
+        .panel h3 i:hover {
+            transform: rotate(180deg);
+        }
+        .action-btn {
+            background: #00aaff;
+            color: #0a0a23;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+            transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+        }
+        .action-btn:hover {
+            background: #0088cc;
+            box-shadow: 0 8px 20px rgba(0,170,255,0.12);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
-
-  <div id="terminal" onclick="focusInput()">
-    <div id="terminal-output">
-      </div>
-    
-    <div class="command-line-container">
-      <span class="prompt">guest@harjinder.dev:~$</span>
-      <input type="text" id="terminal-input" autofocus />
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    <div class="sidebar">
+        <h2><i class="fas fa-server"></i> Panzer C2</h2>
+        <ul>
+            <li><a href="#agents" class="active"><i class="fas fa-users"></i> Agents</a></li>
+            <li><a href="#listeners"><i class="fas fa-signal"></i> Listeners</a></li>
+            <li><a href="#payloads"><i class="fas fa-bomb"></i> Payloads</a></li>
+            <li><a href="#modules"><i class="fas fa-cogs"></i> Modules</a></li>
+            <li><a href="#logs"><i class="fas fa-file-alt"></i> Logs</a></li>
+            <!-- Red Team Tactics removed -->
+            <li><a href="#profile"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="#webshells"><i class="fas fa-code"></i> Webshells</a></li>
+            <li><a href="#games"><i class="fas fa-gamepad"></i> Games</a></li>
+            <li><a href="#tools"><i class="fas fa-tools"></i> Tools</a></li>
+        </ul>
     </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const output = document.getElementById('terminal-output');
-      const input = document.getElementById('terminal-input');
-      const terminal = document.getElementById('terminal');
-      
-      const prompt = 'guest@harjinder.dev:~$';
-      const promptElement = document.querySelector('.prompt');
-
-      // --- YOUR PORTFOLIO CONTENT, REFORMATTED FOR A TERMINAL ---
-      
-      const welcomeMessage = `
-<pre class="ascii-art">
-  _   _   _____
- |█| |█| / ___ \\
-_|█|_|█|_\\ \\_ \\/_
-█████████████████
- |█| |█| /\\__/ /
- |█| |█| \\____/ 
-</pre>
-
-Boot sequence complete. v1.0.0-HS
-Welcome to Harjinder Singh's interactive portfolio.
-Type <strong>help</strong> to see the list of available commands.
-Type <strong>banner</strong> to see the full header.
-`;
-
-
-      const allCommands = {
-        'help': `
-<div class="output-header">COMMAND HELP</div>
-Usage: [command]
-
-<strong>Core Commands:</strong>
-  <span class="command-list">about</span>         Who is Harjinder Singh?
-  <span class="command-list">experience</span>    View professional experience.
-  <span class="command-list">projects</span>      See list of projects.
-  <span class="command-list">skills</span>        List technical skills.
-  <span class="command-list">certs</span>         List certifications.
-  <span class="command-list">contact</span>       Display contact information.
-
-<strong>Utility:</strong>
-  <span class="command-list">help</span>          Show this help menu.
-  <span class="command-list">banner</span>        Display the welcome banner.
-  <span class="command-list">ls</span>            List available commands.
-  <span class="command-list">clear</span>         Clear the terminal screen.
-  <span class="command-list">echo [text]</span>   Prints text.
-`,
-        'about': `
-<div class="output-header">--- About Me ---</div>
-I'm a cybersecurity professional with hands-on expertise in penetration testing, SOC operations, and threat analysis. 
-I started out hacking games as a teenager and turned that passion into a career securing digital systems. 
-I thrive in CTF competitions, build my own tools, and enjoy learning new ways to defend and break systems.
-`,
-        'experience': `
-<div class="output-header">--- Experience ---</div>
-<div class="output-list-item"><strong>Cynox Security LLP (Trainee Security Analyst)</strong><br>  Led VAPT assessments for 15+ clients, created detailed audit reports, and improved threat detection speed by 30%.</div>
-<div class="output-list-item"><strong>GPCSSI - Haryana Police (Cyber Warrior Intern)</strong><br>  Developed an IP Activity Analyzer tool (98% accuracy) and simulated phishing/ransomware attacks for response testing.</div>
-<div class="output-list-item"><strong>CyberYaan (Security Analyst Intern)</strong><br>  Created cybersecurity training content, conducted malware analysis, and worked on network security.</div>
-<div class="output-list-item"><strong>G.S. Fastners (IT Support Technician)</strong><br>  Provided technical support across departments, ensured 98% uptime, and maintained endpoint systems.</div>
-`,
-        'projects': `
-<div class="output-header">--- Projects ---</div>
-<div class="output-list-item"><strong>Wi-Fi Pineapple Clone (ESP8266):</strong> Simulated rogue access points for phishing awareness testing.</div>
-<div class="output-list-item"><strong>USB Rubber Ducky Payloads:</strong> Crafted HID payloads using Raspberry Pi Pico for awareness and endpoint testing.</div>
-<div class="output-list-item"><strong>Linux Server Hardening:</strong> Secured academic lab servers, achieved 86 CIS score with continuous patching.</div>
-<div class="output-list-item"><strong>Home Lab Environment:</strong> Set up internal network with VPN, firewalls, and VMs for pentesting practice.</div>
-<div class="output-list-item"><strong>CTF Participation:</strong> Top 3 in multiple college CTFs; Top 10 in national contests.</div>
-`,
-        'certs': `
-<div class="output-header">--- Certifications ---</div>
-<div class="output-list-item">CEH Practical – EC-Council (Jan 2025)</div>
-<div class="output-list-item">Certified in Cybersecurity – ISC2 (Feb 2025)</div>
-<div class="output-list-item">Google Cybersecurity Professional Certificate</div>
-<div class="output-list-item">TryHackMe: Junior Penetration Tester</div>
-<div class="output-list-item">Microsoft Career Essentials in Cybersecurity</div>
-<div class="output-list-item">+ 30 more on <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">LinkedIn</a></div>
-`,
-        'skills': `
-<div class="output-header">--- Technical Skills ---</div>
-<div class="output-list-item"><strong>Offensive Security:</strong> Burp Suite, Metasploit, Nmap, Wireshark, Payload Dev</div>
-<div class="output-list-item"><strong>Defensive Security:</strong> Splunk, TheHive, IDS/IPS, Threat Hunting, Firewalls</div>
-<div class="output-list-item"><strong>Programming & Scripting:</strong> Python, Bash, SQL, C++</div>
-<div class="output-list-item"><strong>Cloud & OS:</strong> GCP IAM, Linux Server Hardening</div>
-<div class="output-list-item"><strong>Frameworks:</strong> NIST CSF, MITRE ATT&CK, ISO 27001, OWASP Top 10, DRP/BCP</div>
-`,
-        'contact': `
-<div class="output-header">--- Contact ---</div>
-<div class="output-list-item"><strong>Email:</strong> <a href="mailto:harjinder.khalsa4@gmail.com">harjinder.khalsa4@gmail.com</a></div>
-<div class="output-list-item"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">linkedin.com/in/h4rj1nd3r51ngh</a></div>
-<div class="output-list-item"><strong>TryHackMe:</strong> <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank">tryhackme.com/p/h4rj1nd3r51ngh</a></div>
-`,
-        'ls': `
-<span class="command-list">about</span>
-<span class="command-list">experience</span>
-<span class="command-list">projects</span>
-<span class="command-list">skills</span>
-<span class="command-list">certs</span>
-<span class="command-list">contact</span>
-`,
-        'banner': welcomeMessage
-      };
-      
-      // --- END OF CONTENT ---
-
-      // --- TERMINAL LOGIC ---
-      
-      // History for up/down arrows
-      const commandHistory = [];
-      let historyIndex = -1;
-
-      // Initial boot sequence
-      function boot() {
-        printToTerminal(welcomeMessage, 'output-line');
-      }
-
-      // Handle key presses
-      input.addEventListener('keydown', (e) => {
-        switch (e.key) {
-          case 'Enter':
-            e.preventDefault(); // Stop form submission
-            const commandText = input.value.trim();
-            if (commandText) {
-              // Add to history
-              commandHistory.push(commandText);
-              historyIndex = commandHistory.length;
-              
-              // Print the command they just typed
-              printToTerminal(`${prompt} ${commandText}`, 'user-command');
-              
-              // Process and execute
-              processCommand(commandText);
-              
-              // Clear input
-              input.value = '';
-            }
-            break;
-            
-          case 'ArrowUp':
-            e.preventDefault();
-            if (historyIndex > 0) {
-              historyIndex--;
-              input.value = commandHistory[historyIndex];
-              input.setSelectionRange(input.value.length, input.value.length); // Move cursor to end
-            }
-            break;
-            
-          case 'ArrowDown':
-            e.preventDefault();
-            if (historyIndex < commandHistory.length - 1) {
-              historyIndex++;
-              input.value = commandHistory[historyIndex];
-              input.setSelectionRange(input.value.length, input.value.length);
-            } else {
-              // At the bottom of history, clear input
-              historyIndex = commandHistory.length;
-              input.value = '';
-            }
-            break;
-        }
-        
-        // Always scroll to the bottom after any command
-        scrollToBottom();
-      });
-
-      // Process the command
-      function processCommand(command) {
-        const parts = command.split(' ');
-        const cmd = parts[0].toLowerCase();
-        const args = parts.slice(1);
-
-        switch (cmd) {
-          case 'help':
-            printToTerminal(allCommands.help, 'output-line');
-            break;
-          case 'about':
-            printToTerminal(allCommands.about, 'output-line');
-            break;
-          case 'experience':
-            printToTerminal(allCommands.experience, 'output-line');
-            break;
-          case 'projects':
-            printToTerminal(allCommands.projects, 'output-line');
-            break;
-          case 'certs':
-            printToTerminal(allCommands.certs, 'output-line');
-            break;
-          case 'skills':
-            printToTerminal(allCommands.skills, 'output-line');
-            break;
-          case 'contact':
-            printToTerminal(allCommands.contact, 'output-line');
-            break;
-          case 'ls':
-            printToTerminal(allCommands.ls, 'output-line');
-            break;
-          case 'banner':
-            printToTerminal(allCommands.banner, 'output-line');
-            break;
-          case 'clear':
-            output.innerHTML = ''; // Clear all output
-            break;
-          
-          // Easter Egg commands
-          case 'echo':
-            printToTerminal(args.join(' ') || '', 'output-line');
-            break;
-          case 'whoami':
-            printToTerminal('guest', 'output-line');
-            break;
-          case 'sudo':
-            printToTerminal(`User "guest" is not in the sudoers file. This incident will be reported.`, 'output-error');
-            break;
-            
-          default:
-            printToTerminal(`-bash: ${command}: command not found`, 'output-error');
-            break;
-        }
-      }
-
-      // Helper function to print a new line to the output
-      function printToTerminal(text, className) {
-        const line = document.createElement('div');
-        line.className = className;
-        line.innerHTML = text; // Use innerHTML to render links, etc.
-        output.appendChild(line);
-      }
-      
-      // Helper to always scroll to the bottom
-      function scrollToBottom() {
-        terminal.scrollTop = terminal.scrollHeight;
-      }
-      
-      // Helper to focus the input if user clicks anywhere on terminal
-      terminal.addEventListener('click', () => {
-        input.focus();
-      });
-      
-      // Start the terminal
-      boot();
-      
-    });
+    <div class="main-content">
+        <div class="header">
+            <h1>Harjinder Singh - Panzer C2</h1>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <div>Ludhiana, Punjab | +91 9646863809 | harjinder.khalsa4@gmail.com</div>
+            </div>
+        </div>
+        <div class="dashboard">
+            <div id="agents" class="panel">
+                <h3><i class="fas fa-users"></i> Active Agents</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Agent ID</th>
+                            <th>Hostname</th>
+                            <th>Status</th>
+                            <th>Last Seen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>AGENT-001</td>
+                            <td>TARGET-PC</td>
+                            <td><span class="status online">Online</span></td>
+                            <td id="agent1-time">0 sec ago</td>
+                        </tr>
+                        <tr>
+                            <td>AGENT-002</td>
+                            <td>SERVER-01</td>
+                            <td><span class="status offline">Offline</span></td>
+                            <td id="agent2-time">5 min ago</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="action-btn" onclick="refreshAgents()">Refresh Agents</button>
+            </div>
+            <div id="listeners" class="panel">
+                <h3><i class="fas fa-signal"></i> Listeners</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Port</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>HTTP-Listener</td>
+                            <td>HTTP</td>
+                            <td>8080</td>
+                            <td><span class="status online">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>TCP-Listener</td>
+                            <td>TCP</td>
+                            <td>4444</td>
+                            <td><span class="status online">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="action-btn" onclick="addListener()">Add Listener</button>
+            </div>
+            <div id="payloads" class="panel">
+                <h3><i class="fas fa-bomb"></i> Payloads</h3>
+                <button onclick="generatePayload()">Generate New Payload</button>
+                <div class="progress-bar" id="payload-progress" style="display: none;">
+                    <div class="progress-fill" id="payload-fill"></div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payload-table">
+                        <tr>
+                            <td>Windows Reverse TCP</td>
+                            <td>EXE</td>
+                            <td>1.2MB</td>
+                            <td><span class="status online">Generated</span></td>
+                        </tr>
+                        <tr>
+                            <td>Linux Bind Shell</td>
+                            <td>ELF</td>
+                            <td>512KB</td>
+                            <td><span class="status online">Generated</span></td>
+                        </tr>
+                        <tr>
+                            <td>Android RAT</td>
+                            <td>APK</td>
+                            <td>2.1MB</td>
+                            <td><span class="status offline">Building</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="modules" class="panel">
+                <h3><i class="fas fa-cogs"></i> Modules</h3>
+                <ul>
+                    <li><strong>Exploit Modules:</strong> EternalBlue, BlueKeep, Dirty COW</li>
+                    <li><strong>Post-Exploitation:</strong> Mimikatz, PowerShell Empire, BloodHound</li>
+                    <li><strong>Reconnaissance:</strong> Nmap, Masscan, EyeWitness</li>
+                    <li><strong>Persistence:</strong> Scheduled Tasks, Registry Keys, Startup Folders</li>
+                </ul>
+                <button class="action-btn" onclick="loadModules()">Load Modules</button>
+            </div>
+            <div id="logs" class="panel">
+                <h3><i class="fas fa-file-alt"></i> Command Logs</h3>
+                <div class="terminal" id="logs-output">
+                    <p>[2026-02-25 12:00:01] Agent AGENT-001 connected</p>
+                    <p>[2026-02-25 12:00:05] Executed: sysinfo</p>
+                    <p>[2026-02-25 12:00:10] Agent AGENT-001: Windows 10 x64</p>
+                    <p>[2026-02-25 12:01:00] Executed: screenshot</p>
+                    <p>[2026-02-25 12:01:05] Screenshot captured</p>
+                </div>
+                <button class="action-btn" onclick="clearLogs()">Clear Logs</button>
+            </div>
+            <!-- Tips panel removed per request -->
+            <div id="profile" class="panel" style="background-color: #0a0e17; padding: 20px; border-radius: 8px; border: 1px solid #1f2a40; color: #c9d1d9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <h3 style="color: #00ffcc; border-bottom: 1px solid #1f2a40; padding-bottom: 10px;"><i class="fas fa-user-secret"></i> Operator Profile</h3>
     
-    // Global helper so onclick in HTML works
-    function focusInput() {
-      document.getElementById('terminal-input').focus();
-    }
-  </script>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px; margin-top: 15px;">
+        <div>
+            <p style="margin:0; font-size: 1.2em; color: #ffffff;"><strong>Name:</strong> Harjinder_Singh</p>
+            <p style="margin:0; color: #ff3366; font-family: 'Courier New', monospace;">[ still learning ]</p>
+        </div>
+    </div>
+    
+    <p><strong>Experience:</strong> Penetration Testing, SOC Operations, Threat Analysis, Client VAPT, Audit Report Authoring</p>
+    <p><strong>Core Arsenal:</strong> Metasploit, Nmap, Burp Suite, Wireshark, Python, Bash</p>
+    <p style="margin-top: 20px; margin-bottom: 5px;"><strong><i class="fas fa-terminal"></i> Operational Methodology:</strong></p>
+    <pre style="background: #0d1117; color: #00ff00; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace; border: 1px solid #30363d; overflow-x: auto; line-height: 1.5;">
+<span style="color: #ff5555;">root@kali:~#</span> ./execute_methodology.sh
+[*] Threat Emulation: Executing rigorous vulnerability chaining and targeted exploit development to simulate real-world adversaries.
+[*] Stealth & Persistence: Engineering C2 implants with encrypted WebSockets, rotating domains, and advanced AV/EDR evasion tactics.
+[*] OPSEC: Maintaining strict operational security and zero-footprint reporting during authorized engagements.</pre>
+    
+    <p style="margin-top: 20px;"><strong>Advanced Techniques:</strong> Targeting identity as the primary perimeter. Deep focus on Active Directory exploitation—mastering Kerberoasting for ticket extraction, AD CS abuse for privilege escalation, and mapping complex domain trusts via BloodHound for silent lateral movement. Employing rigorous CPTS-level methodology and applying CRTP concepts in live environments.</p>
+    
+    <p><strong>Cutting-Edge Approach:</strong> Integrating local LLMs and custom AI agents directly within a Kali environment for secure, offline reconnaissance automation, intelligent log parsing, and the rapid generation of evasive payloads.</p>
+    
+    <p style="margin-top: 15px;"><strong>Comms Link:</strong> <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank" style="color: #00aaff; text-decoration: none; border-bottom: 1px dotted #00aaff;">h4rj1nd3r51ngh</a></p>
+</div>
+            <div id="tools" class="panel">
+                <h3><i class="fas fa-tools"></i> Arsenal</h3>
+                <div class="grid">
+                    <div class="tooltip"><i class="fab fa-linux fa-2x"></i><br>Linux<span class="tooltiptext">Master Linux for red team ops - essential for pentesting.</span></div>
+                    <div class="tooltip"><i class="fas fa-code fa-2x"></i><br>Python<span class="tooltiptext">Script custom tools and automate attacks with Python.</span></div>
+                    <div class="tooltip"><i class="fas fa-network-wired fa-2x"></i><br>Nmap<span class="tooltiptext">Network mapper for reconnaissance and port scanning.</span></div>
+                    <div class="tooltip"><i class="fas fa-shield-alt fa-2x"></i><br>Metasploit<span class="tooltiptext">Framework for developing and executing exploits.</span></div>
+                    <div class="tooltip"><i class="fas fa-bug fa-2x"></i><br>Burp Suite<span class="tooltiptext">Web vulnerability scanner and proxy tool.</span></div>
+                    <div class="tooltip"><i class="fas fa-eye fa-2x"></i><br>Wireshark<span class="tooltiptext">Packet analyzer for network traffic inspection.</span></div>
+                </div>
+                <button class="action-btn" onclick="scanTools()">Scan for Updates</button>
+            </div>
+            <div id="webshells" class="panel">
+                <h3><i class="fas fa-code"></i> Webshell Manager</h3>
+                <div class="webshell-item">
+                    <strong>Shell ID:</strong> WS-001<br>
+                    <strong>URL:</strong> http://target.com/shell.php<br>
+                    <strong>Status:</strong> <span class="status online">Active</span><br>
+                    <strong>Last Command:</strong> whoami<br>
+                    <strong>Output:</strong> www-data
+                </div>
+                <div class="webshell-item">
+                    <strong>Shell ID:</strong> WS-002<br>
+                    <strong>URL:</strong> http://victim.net/backdoor.asp<br>
+                    <strong>Status:</strong> <span class="status offline">Inactive</span><br>
+                    <strong>Last Command:</strong> dir<br>
+                    <strong>Output:</strong> Access denied
+                </div>
+                <button onclick="executeWebshell('WS-001', 'ls -la')">Execute on WS-001</button>
+            </div>
+            <div class="panel">
+                <h3><i class="fas fa-terminal"></i> Interactive Terminal</h3>
+                <div class="terminal" id="terminal-output">
+                    <p>Welcome to Panzer C2 Terminal</p>
+                    <p>Type 'help' for commands.</p>
+                    <p>$ </p>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="terminal-input" placeholder="Enter command..." onkeypress="handleKeyPress(event)">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('terminal-input');
+                const output = document.getElementById('terminal-output');
+                const command = input.value.trim();
+                output.innerHTML += `<p>$ ${command}</p>`;
+                if (window.playType) playType();
+                processCommand(command, output);
+                input.value = '';
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        function processCommand(cmd, output) {
+            const commands = {
+                'help': 'Available: help, whoami, agents, listeners, payloads, modules, sysinfo, nmap, exploit, pivot, screenshot, keylog, clear, easter',
+                'whoami': 'Operator: harjinder\nRole: Red Team Lead\nClearance: TOP SECRET',
+                'agents': 'AGENT-001: TARGET-PC (Online) - Windows 10\nAGENT-002: SERVER-01 (Offline) - Linux\nAGENT-003: MOBILE-01 (Online) - Android',
+                'listeners': 'HTTP-Listener: 8080 (Active) - 192.168.1.100\nTCP-Listener: 4444 (Active) - 10.0.0.1\nHTTPS-Listener: 8443 (Active) - domain.com',
+                'payloads': 'Available Payloads:\n- windows/meterpreter/reverse_tcp\n- linux/x64/meterpreter/reverse_tcp\n- android/meterpreter/reverse_tcp',
+                'modules': 'Loaded Modules:\n- exploit/windows/smb/ms17_010_eternalblue\n- post/windows/gather/hashdump\n- auxiliary/scanner/portscan/tcp',
+                'sysinfo': 'Panzer C2 Server\nOS: Kali Linux 2023.4\nKernel: 6.1.0\nUptime: 7 days\nMemory: 8GB/16GB\nCPU: Intel i7-9750H',
+                'nmap': 'Starting Nmap 7.94 ( https://nmap.org )\nNmap scan report for 192.168.1.1\nHost is up (0.00050s latency).\nNot shown: 997 closed tcp ports (reset)\nPORT    STATE SERVICE  VERSION\n22/tcp  open  ssh      OpenSSH 8.9p1\n80/tcp  open  http     Apache httpd 2.4.54\n443/tcp open  ssl/http Apache httpd 2.4.54',
+                'exploit': 'Usage: exploit <module> <target>\nExample: exploit eternalblue 192.168.1.100\n[*] Exploiting target...\n[+] Shell obtained!',
+                'pivot': 'Pivoting through AGENT-001...\n[*] Setting up SOCKS proxy on port 1080\n[+] Pivot established. Use proxychains for lateral movement.',
+                'screenshot': 'Taking screenshot from AGENT-001...\n[+] Screenshot saved: screenshot_20260225.png',
+                'keylog': 'Starting keylogger on AGENT-001...\n[+] Keylogger active. Logs will be exfiltrated every 5 minutes.',
+                'easter': '🎉 Easter Egg Found! You\'re a true hacker. Here\'s a tip: Always sanitize your inputs! 🦕',
+                'clear': () => { output.innerHTML = '<p>Welcome to Panzer C2 Terminal</p><p>Type \'help\' for commands.</p><p>$ </p>'; return ''; }
+            };
+            let response = commands[cmd] || `Unknown command: ${cmd}. Type 'help' for available commands.`;
+            if (typeof response === 'function') {
+                response = response();
+            }
+            if (response) {
+                const lines = response.split('\n');
+                lines.forEach(line => output.innerHTML += `<p>${line}</p>`);
+                if (cmd !== 'clear') output.innerHTML += '<p>$ </p>';
+            }
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                const target = document.getElementById(this.getAttribute('href').substring(1));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // sidebar toggle (small screens)
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if(sidebarToggle){ sidebarToggle.addEventListener('click', ()=>{
+            document.querySelector('.sidebar').classList.toggle('open');
+        }); }
+
+        // ensure first menu item active by default
+        (function(){ const first = document.querySelector('.sidebar a'); if(first) first.classList.add('active'); })();
+
+        // Dynamic agent response times
+        let agent1Seconds = 0;
+        setInterval(() => {
+            agent1Seconds = (agent1Seconds + 1) % 60;
+            document.getElementById('agent1-time').textContent = agent1Seconds + ' sec ago';
+        }, 1000);
+
+        // Payload generation animation
+        function generatePayload() {
+            const progress = document.getElementById('payload-progress');
+            const fill = document.getElementById('payload-fill');
+            const table = document.getElementById('payload-table');
+            progress.style.display = 'block';
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 2;
+                fill.style.width = width + '%';
+                if (width >= 100) {
+                    clearInterval(interval);
+                    progress.style.display = 'none';
+                    fill.style.width = '0%';
+                    // Add new payload to table
+                    const row = table.insertRow();
+                    row.innerHTML = `
+                        <td>New Payload</td>
+                        <td>EXE</td>
+                        <td>1.5MB</td>
+                        <td><span class="status online">Generated</span></td>
+                    `;
+                    // play success sound
+                    if (window.playSuccess) playSuccess();
+                }
+            }, 50);
+        }
+
+        // Webshell execution
+        function executeWebshell(id, cmd) {
+            alert(`Executing "${cmd}" on ${id}`);
+            if (window.playExecute) playExecute();
+            // Simulate output update
+        }
+
+        // New interactive functions
+        function refreshAgents() {
+            alert('Refreshing agents...');
+            // Reset times
+            agent1Seconds = 0;
+            document.getElementById('agent1-time').textContent = '0 sec ago';
+            if (window.playClick) playClick();
+        }
+
+        function addListener() {
+            const table = document.querySelector('#listeners table tbody');
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td>New-Listener</td>
+                <td>HTTPS</td>
+                <td>8443</td>
+                <td><span class="status online">Active</span></td>
+            `;
+            alert('New listener added!');
+            if (window.playClick) playClick();
+        }
+
+        function loadModules() {
+            alert('Modules loaded successfully!');
+            if (window.playClick) playClick();
+        }
+
+        function clearLogs() {
+            document.getElementById('logs-output').innerHTML = '<p>Logs cleared.</p>';
+            if (window.playClick) playClick();
+        }
+
+        function scanTools() {
+            alert('Scanning tools for updates... All up to date!');
+            if (window.playClick) playClick();
+        }
+
+        // Simplified panel interactions (games and tips removed)
+        function initPanelInteractions() {
+            const panels = document.querySelectorAll('.panel');
+            panels.forEach((p, i) => {
+                p.style.animationDelay = `${i * 80}ms`;
+                p.addEventListener('mouseenter', () => p.classList.add('focused'));
+                p.addEventListener('mouseleave', () => p.classList.remove('focused'));
+            });
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', () => { if (window.playClick) playClick(); });
+            });
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.panel')) panels.forEach(x => x.classList.remove('focused'));
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initPanelInteractions();
+        });
+
+        /* audio removed: define harmless stubs so remaining calls are no-ops */
+        function playClick(){}
+        function playHover(){}
+        function playSuccess(){}
+        function playPop(){}
+        function playType(){}
+        function playExecute(){}
+    </script>
+    <div class="easter-egg" onclick="alert('🎉 You found the Easter Egg! Pro tip: Use \'easter\' in the terminal for more fun. 🦕')">?</div>
 </body>
 </html>
