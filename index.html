@@ -257,6 +257,74 @@
             box-shadow: 0 8px 20px rgba(0,170,255,0.12);
             transform: translateY(-2px);
         }
+        .profile-card {
+            background: linear-gradient(180deg,#0e1626 0%, #0b1220 100%);
+            border: 1px solid #1c2a45;
+            border-radius: 8px;
+            padding: 18px;
+        }
+        .profile-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .profile-name {
+            color: #e8f6ff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .profile-role {
+            color: #8fcff1;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .profile-badge {
+            color: #91d9ff;
+            border: 1px solid #1f395c;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            align-self: flex-start;
+            background: rgba(0,170,255,0.08);
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin: 12px 0 16px;
+        }
+        .profile-item {
+            background: #0b1424;
+            border: 1px solid #1a2a45;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: #c6dff2;
+        }
+        .profile-label {
+            display: block;
+            color: #66d1ff;
+            font-size: 12px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+        .profile-note {
+            margin-top: 12px;
+            color: #b8d1e6;
+            line-height: 1.6;
+        }
+        .profile-link {
+            color: #66d1ff;
+            text-decoration: none;
+            border-bottom: 1px dotted #66d1ff;
+        }
+        .profile-link:hover {
+            color: #a8e8ff;
+            border-bottom-color: #a8e8ff;
+        }
     </style>
 </head>
 <body>
@@ -272,7 +340,6 @@
             <!-- Red Team Tactics removed -->
             <li><a href="#profile"><i class="fas fa-user"></i> Profile</a></li>
             <li><a href="#webshells"><i class="fas fa-code"></i> Webshells</a></li>
-            <li><a href="#games"><i class="fas fa-gamepad"></i> Games</a></li>
             <li><a href="#tools"><i class="fas fa-tools"></i> Tools</a></li>
         </ul>
     </div>
@@ -399,31 +466,45 @@
                 <button class="action-btn" onclick="clearLogs()">Clear Logs</button>
             </div>
             <!-- Tips panel removed per request -->
-            <div id="profile" class="panel" style="background-color: #0a0e17; padding: 20px; border-radius: 8px; border: 1px solid #1f2a40; color: #c9d1d9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <h3 style="color: #00ffcc; border-bottom: 1px solid #1f2a40; padding-bottom: 10px;"><i class="fas fa-user-secret"></i> Operator Profile</h3>
-    
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px; margin-top: 15px;">
-        <div>
-            <p style="margin:0; font-size: 1.2em; color: #ffffff;"><strong>Name:</strong> Harjinder_Singh</p>
-            <p style="margin:0; color: #ff3366; font-family: 'Courier New', monospace;">[ still learning ]</p>
-        </div>
-    </div>
-    
-    <p><strong>Experience:</strong> Penetration Testing, SOC Operations, Threat Analysis, Client VAPT, Audit Report Authoring</p>
-    <p><strong>Core Arsenal:</strong> Metasploit, Nmap, Burp Suite, Wireshark, Python, Bash</p>
-    <p style="margin-top: 20px; margin-bottom: 5px;"><strong><i class="fas fa-terminal"></i> Operational Methodology:</strong></p>
-    <pre style="background: #0d1117; color: #00ff00; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace; border: 1px solid #30363d; overflow-x: auto; line-height: 1.5;">
-<span style="color: #ff5555;">root@kali:~#</span> ./execute_methodology.sh
-[*] Threat Emulation: Executing rigorous vulnerability chaining and targeted exploit development to simulate real-world adversaries.
-[*] Stealth & Persistence: Engineering C2 implants with encrypted WebSockets, rotating domains, and advanced AV/EDR evasion tactics.
-[*] OPSEC: Maintaining strict operational security and zero-footprint reporting during authorized engagements.</pre>
-    
-    <p style="margin-top: 20px;"><strong>Advanced Techniques:</strong> Targeting identity as the primary perimeter. Deep focus on Active Directory exploitation—mastering Kerberoasting for ticket extraction, AD CS abuse for privilege escalation, and mapping complex domain trusts via BloodHound for silent lateral movement. Employing rigorous CPTS-level methodology and applying CRTP concepts in live environments.</p>
-    
-    <p><strong>Cutting-Edge Approach:</strong> Integrating local LLMs and custom AI agents directly within a Kali environment for secure, offline reconnaissance automation, intelligent log parsing, and the rapid generation of evasive payloads.</p>
-    
-    <p style="margin-top: 15px;"><strong>Comms Link:</strong> <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank" style="color: #00aaff; text-decoration: none; border-bottom: 1px dotted #00aaff;">h4rj1nd3r51ngh</a></p>
-</div>
+            <div id="profile" class="panel">
+                <h3><i class="fas fa-user-secret"></i> Operator Profile</h3>
+                <div class="profile-card">
+                    <div class="profile-top">
+                        <div>
+                            <div class="profile-name">Harjinder Singh</div>
+                            <div class="profile-role">Cybersecurity Practitioner • Red Team Operations</div>
+                        </div>
+                        <span class="profile-badge">Focus: Adversary Simulation</span>
+                    </div>
+
+                    <div class="profile-grid">
+                        <div class="profile-item">
+                            <span class="profile-label">Experience</span>
+                            Penetration Testing, SOC Operations, Threat Analysis, Client VAPT, Audit Reporting
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Core Arsenal</span>
+                            Metasploit, Nmap, Burp Suite, Wireshark, Python, Bash
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Advanced Techniques</span>
+                            Active Directory attack paths, Kerberoasting, AD CS abuse, trust mapping with BloodHound
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Research Direction</span>
+                            Local AI-assisted recon, log triage automation, and secure workflow optimization in Kali
+                        </div>
+                    </div>
+
+                    <div class="profile-note">
+                        Operational approach emphasizes controlled emulation, clear reporting, and defensive value: validate findings, reproduce safely, document risk paths, and provide practical remediation guidance.
+                    </div>
+
+                    <div class="profile-note">
+                        LinkedIn: <a class="profile-link" href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">h4rj1nd3r51ngh</a>
+                    </div>
+                </div>
+            </div>
             <div id="tools" class="panel">
                 <h3><i class="fas fa-tools"></i> Arsenal</h3>
                 <div class="grid">
