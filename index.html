@@ -1,724 +1,797 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="matrix">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harjinder Singh - Panzer C2</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-            background: #0a0a23;
-            color: #e0e0e0;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 240px;
-            background: #071228;
-            padding: 20px;
-            box-sizing: border-box;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            overflow-y: auto;
-            border-right: 1px solid #16213e;
-        }
-        .sidebar h2{
-            color:#00aaff;
-            font-size:18px;
-            margin-bottom:12px;
-            display:flex;
-            align-items:center;
-            gap:10px;
-        }
-        .sidebar ul{ list-style:none;padding:0;margin:10px 0; }
-        .sidebar li{ margin:8px 0; }
-        .sidebar a{ display:flex;gap:10px;align-items:center;color:#a8cfff;text-decoration:none;padding:8px;border-radius:6px;transition:background .12s,color .12s; }
-        .sidebar a i{ width:20px; text-align:center; color:#66d1ff }
-        .sidebar a:hover{ background: rgba(0,170,255,0.06); color:#e6f7ff }
-        .sidebar a.active{ background: linear-gradient(90deg, rgba(0,170,255,0.06), rgba(0,170,255,0.03)); color:#e6f7ff; box-shadow: inset 3px 0 0 0 #00aaff }
-        /* collapse behavior for small screens */
-        .sidebar-toggle{ display:none; position:fixed; left:8px; top:8px; background:#00aaff;color:#071228;border:none;padding:8px;border-radius:6px; z-index:1000 }
-        @media(max-width:900px){ .sidebar{ transform:translateX(-100%); transition:transform .22s ease } .sidebar.open{ transform:translateX(0) } .sidebar-toggle{ display:block } .main-content{ margin-left:0 } }
-
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .header {
-            background: #1a1a2e;
-            padding: 20px;
-            border-bottom: 2px solid #00aaff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 {
-            color: #00aaff;
-        }
-        /* audio removed - UI and engine stripped per user request */
-        .dashboard {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        /* panels styled later for unified dark gradient */
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        .online { background: #00ff88; color: #0a0a23; }
-        .offline { background: #ff4444; color: #e0e0e0; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #16213e;
-        }
-        th {
-            color: #00aaff;
-        }
-        .terminal {
-            background: #0a0a23;
-            border: 1px solid #16213e;
-            height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            font-family: monospace;
-            color: #e0e0e0;
-        }
-        .input-group {
-            margin-top: 10px;
-        }
-        input[type="text"] {
-            width: calc(100% - 60px);
-            background: #16213e;
-            border: 1px solid #00aaff;
-            color: #e0e0e0;
-            padding: 5px;
-        }
-        input[type="text"]:focus {
-            border-color: #00aaff;
-            outline: none;
-        }
-        button {
-            background: #00aaff;
-            color: #0a0a23;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-        button:hover {
-            background: #0088cc;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .grid div {
-            text-align: center;
-            padding: 20px;
-            background: #16213e;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .grid div:hover {
-            background: #00aaff;
-            color: #0a0a23;
-        }
-        .easter-egg {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            color: #00aaff;
-            cursor: pointer;
-        }
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #16213e;
-            color: #e0e0e0;
-            text-align: center;
-            border-radius: 5px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: #16213e;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: #00aaff;
-            width: 0%;
-            transition: width 0.1s;
-        }
-        .webshell-item {
-            background: #16213e;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        pre {
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        @keyframes glow {
-            0% { box-shadow: 0 0 4px rgba(0,170,255,0.08); }
-            50% { box-shadow: 0 0 16px rgba(0,170,255,0.12); }
-            100% { box-shadow: 0 0 4px rgba(0,170,255,0.08); }
-        }
-        @keyframes slideIn {
-            from { transform: translateY(18px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(180deg); }
-        }
-        .panel {
-            background: linear-gradient(180deg,#0b1220 0%, #0a0f1a 100%);
-            border: 1px solid #16213e;
-            border-radius: 6px;
-            margin-bottom: 22px;
-            padding: 18px;
-            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            animation: slideIn 0.42s ease-out;
-            will-change: transform, box-shadow;
-            position: relative;
-            z-index: 1;
-        }
-        /* Use a focused class to avoid continuous pulsing and prevent overlap issues */
-        .panel.focused {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(0,170,255,0.12);
-            border-color: #00aaff;
-            z-index: 50;
-        }
-        .panel:hover {
-            border-color: #00aaff;
-        }
-        .panel h3 i {
-            transition: transform 0.6s ease;
-            display: inline-block;
-        }
-        .panel h3 i:hover {
-            transform: rotate(180deg);
-        }
-        .action-btn {
-            background: #00aaff;
-            color: #0a0a23;
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-top: 10px;
-            transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
-        }
-        .action-btn:hover {
-            background: #0088cc;
-            box-shadow: 0 8px 20px rgba(0,170,255,0.12);
-            transform: translateY(-2px);
-        }
-        .profile-card {
-            background: linear-gradient(180deg,#0e1626 0%, #0b1220 100%);
-            border: 1px solid #1c2a45;
-            border-radius: 8px;
-            padding: 18px;
-        }
-        .profile-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-        }
-        .profile-name {
-            color: #e8f6ff;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .profile-role {
-            color: #8fcff1;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-        }
-        .profile-badge {
-            color: #91d9ff;
-            border: 1px solid #1f395c;
-            border-radius: 999px;
-            padding: 6px 10px;
-            font-size: 12px;
-            align-self: flex-start;
-            background: rgba(0,170,255,0.08);
-        }
-        .profile-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 10px;
-            margin: 12px 0 16px;
-        }
-        .profile-item {
-            background: #0b1424;
-            border: 1px solid #1a2a45;
-            border-radius: 6px;
-            padding: 10px 12px;
-            color: #c6dff2;
-        }
-        .profile-label {
-            display: block;
-            color: #66d1ff;
-            font-size: 12px;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: .4px;
-        }
-        .profile-note {
-            margin-top: 12px;
-            color: #b8d1e6;
-            line-height: 1.6;
-        }
-        .profile-link {
-            color: #66d1ff;
-            text-decoration: none;
-            border-bottom: 1px dotted #66d1ff;
-        }
-        .profile-link:hover {
-            color: #a8e8ff;
-            border-bottom-color: #a8e8ff;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>h4rj1nd3r51ngh — Penetration Tester</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
-    <div class="sidebar">
-        <h2><i class="fas fa-server"></i> Panzer C2</h2>
-        <ul>
-            <li><a href="#agents" class="active"><i class="fas fa-users"></i> Agents</a></li>
-            <li><a href="#listeners"><i class="fas fa-signal"></i> Listeners</a></li>
-            <li><a href="#payloads"><i class="fas fa-bomb"></i> Payloads</a></li>
-            <li><a href="#modules"><i class="fas fa-cogs"></i> Modules</a></li>
-            <li><a href="#logs"><i class="fas fa-file-alt"></i> Logs</a></li>
-            <!-- Red Team Tactics removed -->
-            <li><a href="#profile"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="#webshells"><i class="fas fa-code"></i> Webshells</a></li>
-            <li><a href="#tools"><i class="fas fa-tools"></i> Tools</a></li>
-        </ul>
+
+<!-- ── WELCOME MODAL ─────────────────────────────────── -->
+<div id="welcome-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+      <span class="modal-title">welcome.sh</span>
     </div>
-    <div class="main-content">
-        <div class="header">
-            <h1>Harjinder Singh - Panzer C2</h1>
-            <div style="display:flex;gap:10px;align-items:center;">
-                <div>Ludhiana, Punjab | +91 9646863809 | harjinder.khalsa4@gmail.com</div>
-            </div>
-        </div>
-        <div class="dashboard">
-            <div id="agents" class="panel">
-                <h3><i class="fas fa-users"></i> Active Agents</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Agent ID</th>
-                            <th>Hostname</th>
-                            <th>Status</th>
-                            <th>Last Seen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>AGENT-001</td>
-                            <td>TARGET-PC</td>
-                            <td><span class="status online">Online</span></td>
-                            <td id="agent1-time">0 sec ago</td>
-                        </tr>
-                        <tr>
-                            <td>AGENT-002</td>
-                            <td>SERVER-01</td>
-                            <td><span class="status offline">Offline</span></td>
-                            <td id="agent2-time">5 min ago</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="action-btn" onclick="refreshAgents()">Refresh Agents</button>
-            </div>
-            <div id="listeners" class="panel">
-                <h3><i class="fas fa-signal"></i> Listeners</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Port</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>HTTP-Listener</td>
-                            <td>HTTP</td>
-                            <td>8080</td>
-                            <td><span class="status online">Active</span></td>
-                        </tr>
-                        <tr>
-                            <td>TCP-Listener</td>
-                            <td>TCP</td>
-                            <td>4444</td>
-                            <td><span class="status online">Active</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="action-btn" onclick="addListener()">Add Listener</button>
-            </div>
-            <div id="payloads" class="panel">
-                <h3><i class="fas fa-bomb"></i> Payloads</h3>
-                <button onclick="generatePayload()">Generate New Payload</button>
-                <div class="progress-bar" id="payload-progress" style="display: none;">
-                    <div class="progress-fill" id="payload-fill"></div>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Size</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="payload-table">
-                        <tr>
-                            <td>Windows Reverse TCP</td>
-                            <td>EXE</td>
-                            <td>1.2MB</td>
-                            <td><span class="status online">Generated</span></td>
-                        </tr>
-                        <tr>
-                            <td>Linux Bind Shell</td>
-                            <td>ELF</td>
-                            <td>512KB</td>
-                            <td><span class="status online">Generated</span></td>
-                        </tr>
-                        <tr>
-                            <td>Android RAT</td>
-                            <td>APK</td>
-                            <td>2.1MB</td>
-                            <td><span class="status offline">Building</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="modules" class="panel">
-                <h3><i class="fas fa-cogs"></i> Modules</h3>
-                <ul>
-                    <li><strong>Exploit Modules:</strong> EternalBlue, BlueKeep, Dirty COW</li>
-                    <li><strong>Post-Exploitation:</strong> Mimikatz, PowerShell Empire, BloodHound</li>
-                    <li><strong>Reconnaissance:</strong> Nmap, Masscan, EyeWitness</li>
-                    <li><strong>Persistence:</strong> Scheduled Tasks, Registry Keys, Startup Folders</li>
-                </ul>
-                <button class="action-btn" onclick="loadModules()">Load Modules</button>
-            </div>
-            <div id="logs" class="panel">
-                <h3><i class="fas fa-file-alt"></i> Command Logs</h3>
-                <div class="terminal" id="logs-output">
-                    <p>[2026-02-25 12:00:01] Agent AGENT-001 connected</p>
-                    <p>[2026-02-25 12:00:05] Executed: sysinfo</p>
-                    <p>[2026-02-25 12:00:10] Agent AGENT-001: Windows 10 x64</p>
-                    <p>[2026-02-25 12:01:00] Executed: screenshot</p>
-                    <p>[2026-02-25 12:01:05] Screenshot captured</p>
-                </div>
-                <button class="action-btn" onclick="clearLogs()">Clear Logs</button>
-            </div>
-            <!-- Tips panel removed per request -->
-            <div id="profile" class="panel">
-                <h3><i class="fas fa-user-secret"></i> Operator Profile</h3>
-                <div class="profile-card">
-                    <div class="profile-top">
-                        <div>
-                            <div class="profile-name">Harjinder Singh</div>
-                            <div class="profile-role">Cybersecurity Practitioner • Red Team Operations</div>
-                        </div>
-                        <span class="profile-badge">Focus: Adversary Simulation</span>
-                    </div>
-
-                    <div class="profile-grid">
-                        <div class="profile-item">
-                            <span class="profile-label">Experience</span>
-                            Penetration Testing, SOC Operations, Threat Analysis, Client VAPT, Audit Reporting
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">Core Arsenal</span>
-                            Metasploit, Nmap, Burp Suite, Wireshark, Python, Bash
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">Advanced Techniques</span>
-                            Active Directory attack paths, Kerberoasting, AD CS abuse, trust mapping with BloodHound
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">Research Direction</span>
-                            Local AI-assisted recon, log triage automation, and secure workflow optimization in Kali
-                        </div>
-                    </div>
-
-                    <div class="profile-note">
-                        Operational approach emphasizes controlled emulation, clear reporting, and defensive value: validate findings, reproduce safely, document risk paths, and provide practical remediation guidance.
-                    </div>
-
-                    <div class="profile-note">
-                        LinkedIn: <a class="profile-link" href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank">h4rj1nd3r51ngh</a>
-                    </div>
-                </div>
-            </div>
-            <div id="tools" class="panel">
-                <h3><i class="fas fa-tools"></i> Arsenal</h3>
-                <div class="grid">
-                    <div class="tooltip"><i class="fab fa-linux fa-2x"></i><br>Linux<span class="tooltiptext">Master Linux for red team ops - essential for pentesting.</span></div>
-                    <div class="tooltip"><i class="fas fa-code fa-2x"></i><br>Python<span class="tooltiptext">Script custom tools and automate attacks with Python.</span></div>
-                    <div class="tooltip"><i class="fas fa-network-wired fa-2x"></i><br>Nmap<span class="tooltiptext">Network mapper for reconnaissance and port scanning.</span></div>
-                    <div class="tooltip"><i class="fas fa-shield-alt fa-2x"></i><br>Metasploit<span class="tooltiptext">Framework for developing and executing exploits.</span></div>
-                    <div class="tooltip"><i class="fas fa-bug fa-2x"></i><br>Burp Suite<span class="tooltiptext">Web vulnerability scanner and proxy tool.</span></div>
-                    <div class="tooltip"><i class="fas fa-eye fa-2x"></i><br>Wireshark<span class="tooltiptext">Packet analyzer for network traffic inspection.</span></div>
-                </div>
-                <button class="action-btn" onclick="scanTools()">Scan for Updates</button>
-            </div>
-            <div id="webshells" class="panel">
-                <h3><i class="fas fa-code"></i> Webshell Manager</h3>
-                <div class="webshell-item">
-                    <strong>Shell ID:</strong> WS-001<br>
-                    <strong>URL:</strong> http://target.com/shell.php<br>
-                    <strong>Status:</strong> <span class="status online">Active</span><br>
-                    <strong>Last Command:</strong> whoami<br>
-                    <strong>Output:</strong> www-data
-                </div>
-                <div class="webshell-item">
-                    <strong>Shell ID:</strong> WS-002<br>
-                    <strong>URL:</strong> http://victim.net/backdoor.asp<br>
-                    <strong>Status:</strong> <span class="status offline">Inactive</span><br>
-                    <strong>Last Command:</strong> dir<br>
-                    <strong>Output:</strong> Access denied
-                </div>
-                <button onclick="executeWebshell('WS-001', 'ls -la')">Execute on WS-001</button>
-            </div>
-            <div class="panel">
-                <h3><i class="fas fa-terminal"></i> Interactive Terminal</h3>
-                <div class="terminal" id="terminal-output">
-                    <p>Welcome to Panzer C2 Terminal</p>
-                    <p>Type 'help' for commands.</p>
-                    <p>$ </p>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="terminal-input" placeholder="Enter command..." onkeypress="handleKeyPress(event)">
-                </div>
-            </div>
-        </div>
+    <div class="modal-body">
+      <p class="modal-line">Welcome to <span class="c-green">Harjinder's Terminal</span> 🔐</p>
+      <ul class="modal-tips">
+        <li>Press <kbd>`</kbd> to enter CLI mode</li>
+        <li>Press <kbd>Ctrl+Shift+H</kbd> for Hacker Showcase</li>
+        <li>Press <kbd>?</kbd> for keyboard shortcuts</li>
+        <li>Click <span class="c-cyan">[theme]</span> to cycle 4 themes</li>
+      </ul>
     </div>
-    <script>
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                const input = document.getElementById('terminal-input');
-                const output = document.getElementById('terminal-output');
-                const command = input.value.trim();
-                output.innerHTML += `<p>$ ${command}</p>`;
-                if (window.playType) playType();
-                processCommand(command, output);
-                input.value = '';
-                output.scrollTop = output.scrollHeight;
-            }
-        }
+    <button id="modal-close" class="btn-terminal">[ Got it! ]</button>
+  </div>
+</div>
 
-        function processCommand(cmd, output) {
-            const commands = {
-                'help': 'Available: help, whoami, agents, listeners, payloads, modules, sysinfo, nmap, exploit, pivot, screenshot, keylog, clear, easter',
-                'whoami': 'Operator: harjinder\nRole: Red Team Lead\nClearance: TOP SECRET',
-                'agents': 'AGENT-001: TARGET-PC (Online) - Windows 10\nAGENT-002: SERVER-01 (Offline) - Linux\nAGENT-003: MOBILE-01 (Online) - Android',
-                'listeners': 'HTTP-Listener: 8080 (Active) - 192.168.1.100\nTCP-Listener: 4444 (Active) - 10.0.0.1\nHTTPS-Listener: 8443 (Active) - domain.com',
-                'payloads': 'Available Payloads:\n- windows/meterpreter/reverse_tcp\n- linux/x64/meterpreter/reverse_tcp\n- android/meterpreter/reverse_tcp',
-                'modules': 'Loaded Modules:\n- exploit/windows/smb/ms17_010_eternalblue\n- post/windows/gather/hashdump\n- auxiliary/scanner/portscan/tcp',
-                'sysinfo': 'Panzer C2 Server\nOS: Kali Linux 2023.4\nKernel: 6.1.0\nUptime: 7 days\nMemory: 8GB/16GB\nCPU: Intel i7-9750H',
-                'nmap': 'Starting Nmap 7.94 ( https://nmap.org )\nNmap scan report for 192.168.1.1\nHost is up (0.00050s latency).\nNot shown: 997 closed tcp ports (reset)\nPORT    STATE SERVICE  VERSION\n22/tcp  open  ssh      OpenSSH 8.9p1\n80/tcp  open  http     Apache httpd 2.4.54\n443/tcp open  ssl/http Apache httpd 2.4.54',
-                'exploit': 'Usage: exploit <module> <target>\nExample: exploit eternalblue 192.168.1.100\n[*] Exploiting target...\n[+] Shell obtained!',
-                'pivot': 'Pivoting through AGENT-001...\n[*] Setting up SOCKS proxy on port 1080\n[+] Pivot established. Use proxychains for lateral movement.',
-                'screenshot': 'Taking screenshot from AGENT-001...\n[+] Screenshot saved: screenshot_20260225.png',
-                'keylog': 'Starting keylogger on AGENT-001...\n[+] Keylogger active. Logs will be exfiltrated every 5 minutes.',
-                'easter': '🎉 Easter Egg Found! You\'re a true hacker. Here\'s a tip: Always sanitize your inputs! 🦕',
-                'clear': () => { output.innerHTML = '<p>Welcome to Panzer C2 Terminal</p><p>Type \'help\' for commands.</p><p>$ </p>'; return ''; }
-            };
-            let response = commands[cmd] || `Unknown command: ${cmd}. Type 'help' for available commands.`;
-            if (typeof response === 'function') {
-                response = response();
-            }
-            if (response) {
-                const lines = response.split('\n');
-                lines.forEach(line => output.innerHTML += `<p>${line}</p>`);
-                if (cmd !== 'clear') output.innerHTML += '<p>$ </p>';
-            }
-        }
+<!-- ── KEYBOARD SHORTCUTS MODAL ──────────────────────── -->
+<div id="shortcuts-modal" class="modal-overlay hidden">
+  <div class="modal-box wide">
+    <div class="modal-header">
+      <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+      <span class="modal-title">keyboard-shortcuts.conf</span>
+      <button class="modal-x" id="close-shortcuts">✕</button>
+    </div>
+    <div class="shortcuts-grid">
+      <div><kbd>`</kbd><span>Toggle CLI mode</span></div>
+      <div><kbd>?</kbd><span>Show shortcuts</span></div>
+      <div><kbd>Ctrl+Shift+H</kbd><span>Hacker showcase</span></div>
+      <div><kbd>Esc</kbd><span>Close modals / exit CLI</span></div>
+      <div><kbd>G+H</kbd><span>Go to Hero</span></div>
+      <div><kbd>G+A</kbd><span>Go to About</span></div>
+      <div><kbd>G+S</kbd><span>Go to Skills</span></div>
+      <div><kbd>G+P</kbd><span>Go to Projects</span></div>
+      <div><kbd>G+C</kbd><span>Go to Contact</span></div>
+      <div><kbd>T</kbd><span>Cycle theme</span></div>
+    </div>
+  </div>
+</div>
 
-        // Sidebar navigation
-        document.querySelectorAll('.sidebar a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
-                this.classList.add('active');
-                const target = document.getElementById(this.getAttribute('href').substring(1));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
+<!-- ── HACKER SHOWCASE OVERLAY ────────────────────────── -->
+<div id="hacker-overlay" class="hacker-overlay hidden">
+  <canvas id="matrix-canvas"></canvas>
+  <div class="hacker-center">
+    <div class="hacker-text">INITIALIZING...</div>
+    <div class="hacker-sub">[ ACCESS GRANTED — ROOT ]</div>
+    <button id="exit-hacker" class="btn-terminal">[ EXIT ]</button>
+  </div>
+</div>
 
-        // sidebar toggle (small screens)
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        if(sidebarToggle){ sidebarToggle.addEventListener('click', ()=>{
-            document.querySelector('.sidebar').classList.toggle('open');
-        }); }
+<!-- ── CLI OVERLAY ────────────────────────────────────── -->
+<div id="cli-overlay" class="cli-overlay hidden">
+  <div class="cli-container">
+    <div class="cli-header">
+      <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+      <span class="cli-title">h4rj1nd3r51ngh@portfolio:~</span>
+      <button id="cli-close" class="modal-x">✕</button>
+    </div>
+    <div id="cli-output" class="cli-output"></div>
+    <div class="cli-input-row">
+      <span class="cli-prompt">h4rj1nd3r@portfolio:~$</span>
+      <input id="cli-input" type="text" class="cli-input" placeholder="type 'help' for commands..." autocomplete="off" spellcheck="false"/>
+    </div>
+  </div>
+</div>
 
-        // ensure first menu item active by default
-        (function(){ const first = document.querySelector('.sidebar a'); if(first) first.classList.add('active'); })();
+<!-- ── TOP NAVBAR ─────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand">
+    <span class="prompt-sym">$</span>
+    <span class="nav-name">h4rj1nd3r51ngh</span>
+    <span class="blink-cursor">█</span>
+  </div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#certifications">certs</a></li>
+    <li><a href="#arsenal">arsenal</a></li>
+    <li><a href="#ctf">ctf</a></li>
+    <li><a href="#blog">blog</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button id="theme-btn" class="nav-btn" title="Cycle theme">[theme]</button>
+    <button id="cli-btn" class="nav-btn" title="Open CLI">[cli]</button>
+    <button class="nav-burger" id="nav-burger">☰</button>
+  </div>
+</nav>
 
-        // Dynamic agent response times
-        let agent1Seconds = 0;
-        setInterval(() => {
-            agent1Seconds = (agent1Seconds + 1) % 60;
-            document.getElementById('agent1-time').textContent = agent1Seconds + ' sec ago';
-        }, 1000);
+<!-- ── STATUS BAR ─────────────────────────────────────── -->
+<div class="status-bar">
+  <span>● <span id="section-display">about</span></span>
+  <span id="scroll-pct">0%</span>
+  <span>scrolled</span>
+</div>
 
-        // Payload generation animation
-        function generatePayload() {
-            const progress = document.getElementById('payload-progress');
-            const fill = document.getElementById('payload-fill');
-            const table = document.getElementById('payload-table');
-            progress.style.display = 'block';
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 2;
-                fill.style.width = width + '%';
-                if (width >= 100) {
-                    clearInterval(interval);
-                    progress.style.display = 'none';
-                    fill.style.width = '0%';
-                    // Add new payload to table
-                    const row = table.insertRow();
-                    row.innerHTML = `
-                        <td>New Payload</td>
-                        <td>EXE</td>
-                        <td>1.5MB</td>
-                        <td><span class="status online">Generated</span></td>
-                    `;
-                    // play success sound
-                    if (window.playSuccess) playSuccess();
-                }
-            }, 50);
-        }
+<!-- ─────────────────────────────────────────────────────
+     HERO
+────────────────────────────────────────────────────── -->
+<section id="hero" class="section-hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-content">
+    <!-- BOOT TEXT -->
+    <div class="boot-sequence" id="boot-seq">
+      <div class="boot-line"> > Establishing encrypted tunnel... <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > TLS 1.3 — AES-256-GCM — SHA-512 <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > Biometric + OTP verified: <span class="c-cyan">HARJINDER SINGH</span> <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > Clearance granted: <span class="c-yellow">PENDING / WHITE HAT</span> <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > Defense portal online. Session active. <span class="c-green">[OK]</span></div>
+    </div>
 
-        // Webshell execution
-        function executeWebshell(id, cmd) {
-            alert(`Executing "${cmd}" on ${id}`);
-            if (window.playExecute) playExecute();
-            // Simulate output update
-        }
+    <div class="hero-main" id="hero-main" style="opacity:0">
+      <!-- LEFT -->
+      <div class="hero-left">
+        <div class="hero-comment">// OPERATOR IDENTITY</div>
+        <h1 class="hero-name">HARJINDER<br/><span class="c-green">SINGH</span></h1>
+        <div class="hero-role">
+          <span class="prompt-sym">$</span>
+          <span id="typewriter" class="typewriter"></span>
+          <span class="blink-cursor">█</span>
+        </div>
+        <p class="hero-bio">
+          Penetration Tester &amp; Security Analyst with a hands-on trajectory in red team operations,
+          web application testing, and AD exploitation. Interning at Cynox Security LLP, CyberYaan
+          &amp; GPCSSI (Haryana Police). Pursuing HTB CPTS &amp; CRTO.<br/>
+          <span class="c-dim">All work is legal, authorized, and white-hat.</span>
+        </p>
+        <div class="hero-tags">
+          <span class="tag">Red Teaming</span>
+          <span class="tag">VAPT</span>
+          <span class="tag">AD Exploitation</span>
+          <span class="tag">OSINT</span>
+          <span class="tag">Web Shells</span>
+          <span class="tag">White Hat</span>
+        </div>
+        <div class="hero-btns">
+          <a href="#projects" class="btn-terminal">$ ./view_projects.sh</a>
+          <a href="#contact" class="btn-outline">$ ./contact.sh</a>
+        </div>
+        <div class="hero-socials">
+          <a href="https://github.com/h4rj1nd3r51ngh" target="_blank" title="GitHub">GH</a>
+          <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank" title="LinkedIn">LI</a>
+          <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank" title="TryHackMe">THM</a>
+          <a href="mailto:harjinder.khalsa4@gmail.com" title="Email">ML</a>
+        </div>
+      </div>
 
-        // New interactive functions
-        function refreshAgents() {
-            alert('Refreshing agents...');
-            // Reset times
-            agent1Seconds = 0;
-            document.getElementById('agent1-time').textContent = '0 sec ago';
-            if (window.playClick) playClick();
-        }
+      <!-- RIGHT -->
+      <div class="hero-right">
+        <!-- NEOFETCH card -->
+        <div class="neo-card">
+          <div class="neo-header">
+            <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+            <span class="neo-cmd">$ neofetch --minimal</span>
+          </div>
+          <div class="neo-body">
+            <div class="neo-row"><span class="neo-key">USER</span><span class="neo-val c-green">h4rj1nd3r51ngh</span></div>
+            <div class="neo-row"><span class="neo-key">HOST</span><span class="neo-val">portfolio.local</span></div>
+            <div class="neo-row"><span class="neo-key">LOCATION</span><span class="neo-val">Ludhiana, Punjab, IN</span></div>
+            <div class="neo-row"><span class="neo-key">ROLE</span><span class="neo-val c-cyan">Penetration Tester</span></div>
+            <div class="neo-row"><span class="neo-key">STATUS</span><span class="neo-val c-green">ACTIVE · WHITE HAT</span></div>
+            <div class="neo-row"><span class="neo-key">CLEARANCE</span><span class="neo-val c-yellow">AUTHORIZED</span></div>
+            <div class="neo-row"><span class="neo-key">UPTIME</span><span class="neo-val">3+ YRS</span></div>
+            <div class="neo-row"><span class="neo-key">SESSION</span><span class="neo-val c-green">ACTIVE</span></div>
+            <div class="neo-row"><span class="neo-key">CERTS (WIP)</span><span class="neo-val">HTB CPTS · CRTO</span></div>
+            <div class="neo-divider"></div>
+            <div class="neo-colors">
+              <span style="background:#ff5f57"></span><span style="background:#febc2e"></span>
+              <span style="background:#28c840"></span><span style="background:#00d7ff"></span>
+              <span style="background:#a855f7"></span><span style="background:#ffffff"></span>
+            </div>
+          </div>
+        </div>
 
-        function addListener() {
-            const table = document.querySelector('#listeners table tbody');
-            const row = table.insertRow();
-            row.innerHTML = `
-                <td>New-Listener</td>
-                <td>HTTPS</td>
-                <td>8443</td>
-                <td><span class="status online">Active</span></td>
-            `;
-            alert('New listener added!');
-            if (window.playClick) playClick();
-        }
+        <!-- LIVE ACTIVITY -->
+        <div class="live-card">
+          <div class="live-header">// LIVE ACTIVITY</div>
+          <div class="live-item critical"><span class="live-badge critical">ACTIVE</span> Training session: CPTS Path — lab active</div>
+          <div class="live-item info"><span class="live-badge info">INFO</span> Cynox Security LLP — pentest engagement</div>
+          <div class="live-item info"><span class="live-badge warn">WARN</span> CRTO course review — 37% complete</div>
+        </div>
 
-        function loadModules() {
-            alert('Modules loaded successfully!');
-            if (window.playClick) playClick();
-        }
+        <!-- STATS -->
+        <div class="stats-row">
+          <div class="stat-box"><span class="stat-num" data-target="3">0</span><span class="stat-lbl">+ YRS<br/>LEARNING</span></div>
+          <div class="stat-box"><span class="stat-num" data-target="3">0</span><span class="stat-lbl">ACTIVE<br/>INTERNSHIPS</span></div>
+          <div class="stat-box"><span class="stat-num" data-target="20">0</span><span class="stat-lbl">+ TOOLS<br/>ARSENAL</span></div>
+          <div class="stat-box"><span class="stat-num" data-target="10">0</span><span class="stat-lbl">+ CTF<br/>CHALLENGES</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL ↓</div>
+</section>
 
-        function clearLogs() {
-            document.getElementById('logs-output').innerHTML = '<p>Logs cleared.</p>';
-            if (window.playClick) playClick();
-        }
+<!-- ─────────────────────────────────────────────────────
+     ABOUT
+────────────────────────────────────────────────────── -->
+<section id="about" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// ABOUT</span>
+      <div class="section-cmd">$ cat /home/harjinder/about.txt</div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text term-block">
+        <p>Name: <span class="c-green">Harjinder Singh</span> (aka <span class="c-cyan">Ankit</span>)</p>
+        <p>Handle: <span class="c-green">h4rj1nd3r51ngh</span></p>
+        <p>Location: <span class="c-cyan">Ludhiana, Punjab, India</span></p>
+        <p>University: <span class="c-yellow">GNA University</span></p>
+        <br/>
+        <p>
+          I'm a cybersecurity enthusiast transitioning from academic learning to real-world professional
+          application. I operate within legal penetration testing teams, performing full-stack offensive
+          security assessments — from initial reconnaissance to exploitation and reporting.
+        </p>
+        <br/>
+        <p>
+          Currently interning at <span class="c-cyan">Cynox Security LLP</span>, <span class="c-cyan">CyberYaan</span>,
+          and working as a <span class="c-green">Cyber Warrior Intern</span> at GPCSSI (Haryana Police).
+          I believe in hands-on, lab-based skill building and pursue certifications that reflect real-world competency.
+        </p>
+        <br/>
+        <p class="c-dim">All cybersecurity work described here is authorized, legal, and white-hat.</p>
+      </div>
+      <div class="about-radar">
+        <div class="radar-title">// CAPABILITY RADAR</div>
+        <div class="radar-wrap">
+          <canvas id="radar-chart" width="260" height="260"></canvas>
+        </div>
+        <div class="radar-labels">
+          <span>RECON</span><span>EXPLOIT</span><span>SIGINT</span>
+          <span>VAPT</span><span>OSINT</span><span>DEFENCE</span>
+        </div>
+      </div>
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
 
-        function scanTools() {
-            alert('Scanning tools for updates... All up to date!');
-            if (window.playClick) playClick();
-        }
+<!-- ─────────────────────────────────────────────────────
+     SKILLS
+────────────────────────────────────────────────────── -->
+<section id="skills" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// SKILLS</span>
+      <div class="section-cmd">$ apt list --installed <span class="c-dim">// View technical expertise</span></div>
+    </div>
+    <div class="skills-grid">
 
-        // Simplified panel interactions (games and tips removed)
-        function initPanelInteractions() {
-            const panels = document.querySelectorAll('.panel');
-            panels.forEach((p, i) => {
-                p.style.animationDelay = `${i * 80}ms`;
-                p.addEventListener('mouseenter', () => p.classList.add('focused'));
-                p.addEventListener('mouseleave', () => p.classList.remove('focused'));
-            });
-            document.querySelectorAll('.action-btn').forEach(btn => {
-                btn.addEventListener('click', () => { if (window.playClick) playClick(); });
-            });
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.panel')) panels.forEach(x => x.classList.remove('focused'));
-            });
-        }
+      <div class="skill-category">
+        <div class="skill-cat-title">[ Offensive Security ]</div>
+        <div class="skill-item"><span class="skill-name">Penetration Testing</span><div class="skill-bar"><div class="skill-fill" data-pct="85"></div></div><span class="skill-pct">85%</span></div>
+        <div class="skill-item"><span class="skill-name">Active Directory Exploitation</span><div class="skill-bar"><div class="skill-fill" data-pct="78"></div></div><span class="skill-pct">78%</span></div>
+        <div class="skill-item"><span class="skill-name">Web Application Testing</span><div class="skill-bar"><div class="skill-fill" data-pct="80"></div></div><span class="skill-pct">80%</span></div>
+        <div class="skill-item"><span class="skill-name">Metasploit Framework</span><div class="skill-bar"><div class="skill-fill" data-pct="82"></div></div><span class="skill-pct">82%</span></div>
+        <div class="skill-item"><span class="skill-name">Red Teaming (CRTO in progress)</span><div class="skill-bar"><div class="skill-fill" data-pct="55"></div></div><span class="skill-pct">55%</span></div>
+      </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initPanelInteractions();
-        });
+      <div class="skill-category">
+        <div class="skill-cat-title">[ Recon & OSINT ]</div>
+        <div class="skill-item"><span class="skill-name">Nmap / Network Scanning</span><div class="skill-bar"><div class="skill-fill" data-pct="90"></div></div><span class="skill-pct">90%</span></div>
+        <div class="skill-item"><span class="skill-name">OSINT Techniques</span><div class="skill-bar"><div class="skill-fill" data-pct="75"></div></div><span class="skill-pct">75%</span></div>
+        <div class="skill-item"><span class="skill-name">Burp Suite Pro</span><div class="skill-bar"><div class="skill-fill" data-pct="83"></div></div><span class="skill-pct">83%</span></div>
+        <div class="skill-item"><span class="skill-name">Shodan / Maltego</span><div class="skill-bar"><div class="skill-fill" data-pct="70"></div></div><span class="skill-pct">70%</span></div>
+      </div>
 
-        /* audio removed: define harmless stubs so remaining calls are no-ops */
-        function playClick(){}
-        function playHover(){}
-        function playSuccess(){}
-        function playPop(){}
-        function playType(){}
-        function playExecute(){}
-    </script>
-    <div class="easter-egg" onclick="alert('🎉 You found the Easter Egg! Pro tip: Use \'easter\' in the terminal for more fun. 🦕')">?</div>
+      <div class="skill-category">
+        <div class="skill-cat-title">[ Tools & Platforms ]</div>
+        <div class="skill-item"><span class="skill-name">Kali Linux</span><div class="skill-bar"><div class="skill-fill" data-pct="92"></div></div><span class="skill-pct">92%</span></div>
+        <div class="skill-item"><span class="skill-name">Wireshark / Tcpdump</span><div class="skill-bar"><div class="skill-fill" data-pct="76"></div></div><span class="skill-pct">76%</span></div>
+        <div class="skill-item"><span class="skill-name">Python Scripting</span><div class="skill-bar"><div class="skill-fill" data-pct="72"></div></div><span class="skill-pct">72%</span></div>
+        <div class="skill-item"><span class="skill-name">Bash / Shell Scripting</span><div class="skill-bar"><div class="skill-fill" data-pct="78"></div></div><span class="skill-pct">78%</span></div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     EXPERIENCE
+────────────────────────────────────────────────────── -->
+<section id="experience" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// EXPERIENCE</span>
+      <div class="section-cmd">$ git log --format="%h %s" --reverse <span class="c-dim">// Work history</span></div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item active">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge active-badge">ACTIVE</span><span class="tl-date">2025 — Present</span></div>
+          <div class="tl-role">Trainee Security Analyst</div>
+          <div class="tl-company">Cynox Security LLP</div>
+          <p class="tl-desc">Hands-on penetration testing across web, network, and AD environments. Conducting authorized VAPT engagements, writing detailed security reports, and collaborating on red team exercises.</p>
+          <div class="tl-tags"><span class="tag">VAPT</span><span class="tag">Active Directory</span><span class="tag">Reporting</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item active">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge active-badge">ACTIVE</span><span class="tl-date">2025 — Present</span></div>
+          <div class="tl-role">Security Analyst Intern</div>
+          <div class="tl-company">CyberYaan</div>
+          <p class="tl-desc">Supporting security operations including vulnerability assessment, web application testing, and threat analysis. Assisting senior analysts with penetration test documentation and client communication.</p>
+          <div class="tl-tags"><span class="tag">Web App Testing</span><span class="tag">Vuln Assessment</span><span class="tag">SOC</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item active">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge govt-badge">GOVT</span><span class="tl-date">2025 — Present</span></div>
+          <div class="tl-role">Cyber Warrior Intern</div>
+          <div class="tl-company">GPCSSI — Haryana Police</div>
+          <p class="tl-desc">Working with the Government of Haryana's Cyber Security unit. Exposure to law-enforcement grade cybercrime investigation workflows, digital forensics, and threat intelligence practices.</p>
+          <div class="tl-tags"><span class="tag">Digital Forensics</span><span class="tag">Threat Intel</span><span class="tag">Govt Sec</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge edu-badge">EDUCATION</span><span class="tl-date">2023 — Present</span></div>
+          <div class="tl-role">B.Tech — Cybersecurity</div>
+          <div class="tl-company">GNA University</div>
+          <p class="tl-desc">Pursuing a Bachelor of Technology in Cybersecurity. Active participation in CTF competitions, security labs, and research projects on offensive and defensive security topics.</p>
+          <div class="tl-tags"><span class="tag">CTF</span><span class="tag">Research</span><span class="tag">GNA University</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     PROJECTS
+────────────────────────────────────────────────────── -->
+<section id="projects" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// PROJECTS</span>
+      <div class="section-cmd">$ ls ~/projects/ <span class="c-dim">// Security research & labs</span></div>
+      <div class="view-tabs" data-target="projects-grid">
+        <button class="vtab active" data-view="grid">grid</button>
+        <button class="vtab" data-view="list">list</button>
+        <button class="vtab" data-view="compact">compact</button>
+      </div>
+    </div>
+    <div id="projects-grid" class="projects-grid view-grid">
+
+      <div class="project-card" data-category="offensive">
+        <div class="project-header">
+          <span class="project-icon">⚔</span>
+          <div class="project-badges"><span class="tag red">Offensive</span></div>
+        </div>
+        <div class="project-title">Active Directory Lab — Full Compromise Chain</div>
+        <p class="project-desc">Built a local AD lab (Windows Server 2019 + endpoints) and chained: Kerberoasting → Pass-the-Hash → DCSync → Domain Admin compromise. Documented full attack path and mitigations.</p>
+        <div class="project-tags"><span class="tag">BloodHound</span><span class="tag">Impacket</span><span class="tag">Mimikatz</span><span class="tag">AD</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/ad-compromise-lab</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="web">
+        <div class="project-header">
+          <span class="project-icon">🕸</span>
+          <div class="project-badges"><span class="tag cyan">Web</span></div>
+        </div>
+        <div class="project-title">Web Application Pentest Report (DVWA + Custom)</div>
+        <p class="project-desc">Full VAPT assessment on DVWA and a custom PHP app. Identified and exploited SQLi, XSS, IDOR, File Upload bypass, Command Injection. Wrote a professional-grade findings report.</p>
+        <div class="project-tags"><span class="tag">SQLMap</span><span class="tag">Burp Suite</span><span class="tag">OWASP Top 10</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/webapp-pentest</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="recon">
+        <div class="project-header">
+          <span class="project-icon">🔭</span>
+          <div class="project-badges"><span class="tag yellow">OSINT</span></div>
+        </div>
+        <div class="project-title">OSINT Investigation Framework (Custom Script)</div>
+        <p class="project-desc">Python-based OSINT automation tool that aggregates data from multiple sources (Shodan, DNS, WHOIS, social scraping) to build a target profile. CLI-driven with JSON output for reporting.</p>
+        <div class="project-tags"><span class="tag">Python</span><span class="tag">Shodan API</span><span class="tag">OSINT</span><span class="tag">Automation</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/osint-framework</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="network">
+        <div class="project-header">
+          <span class="project-icon">📡</span>
+          <div class="project-badges"><span class="tag purple">Network</span></div>
+        </div>
+        <div class="project-title">Network Traffic Analysis & Anomaly Detection</div>
+        <p class="project-desc">Captured and analyzed PCAP files from a simulated corporate network. Identified lateral movement, C2 beaconing, data exfiltration patterns using Wireshark + custom Python parsers.</p>
+        <div class="project-tags"><span class="tag">Wireshark</span><span class="tag">Python</span><span class="tag">Zeek</span><span class="tag">PCAP</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/network-analysis</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="offensive">
+        <div class="project-header">
+          <span class="project-icon">💉</span>
+          <div class="project-badges"><span class="tag red">Exploit Dev</span></div>
+        </div>
+        <div class="project-title">Web Shell Lab — Upload & Persistence Techniques</div>
+        <p class="project-desc">Researched and tested various web shell upload techniques against hardened environments. Built a test harness to validate WAF bypass methods and document server-side persistence mechanisms.</p>
+        <div class="project-tags"><span class="tag">PHP</span><span class="tag">WAF Bypass</span><span class="tag">Web Shells</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/webshell-lab</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="forensics">
+        <div class="project-header">
+          <span class="project-icon">🔬</span>
+          <div class="project-badges"><span class="tag green">Forensics</span></div>
+        </div>
+        <div class="project-title">Digital Forensics Case Simulation</div>
+        <p class="project-desc">Simulated a cybercrime investigation for GPCSSI internship — disk imaging, memory forensics with Volatility, timeline analysis, evidence chain-of-custody documentation.</p>
+        <div class="project-tags"><span class="tag">Volatility</span><span class="tag">Autopsy</span><span class="tag">FTK Imager</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/forensics-case</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     CERTIFICATIONS / EDUCATION
+────────────────────────────────────────────────────── -->
+<section id="certifications" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// CERTIFICATIONS</span>
+      <div class="section-cmd">$ gpg --list-keys --keyring credentials <span class="c-dim">// Credentials & education</span></div>
+    </div>
+
+    <div class="cert-grid">
+
+      <div class="cert-card wip">
+        <div class="cert-status wip-badge">IN PROGRESS — 2026</div>
+        <div class="cert-icon">🏆</div>
+        <div class="cert-name">HTB Certified Penetration Testing Specialist</div>
+        <div class="cert-issuer">Hack The Box</div>
+        <p class="cert-desc">Hands-on, lab-based certification covering the full pentest lifecycle. Target completion: mid-2026 (3–4 month path).</p>
+        <div class="cert-bar-wrap"><div class="cert-bar"><div class="cert-fill" data-pct="40" style="width:0%"></div></div><span class="cert-pct">40%</span></div>
+      </div>
+
+      <div class="cert-card wip">
+        <div class="cert-status wip-badge">IN REVIEW — 2026</div>
+        <div class="cert-icon">🔴</div>
+        <div class="cert-name">Certified Red Team Operator (CRTO)</div>
+        <div class="cert-issuer">Zero-Point Security</div>
+        <p class="cert-desc">Advanced red team adversary simulation certification using Cobalt Strike tradecraft. Currently reviewing course material — 37% complete.</p>
+        <div class="cert-bar-wrap"><div class="cert-bar"><div class="cert-fill" data-pct="37" style="width:0%"></div></div><span class="cert-pct">37%</span></div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-status done-badge">COMPLETED</div>
+        <div class="cert-icon">📡</div>
+        <div class="cert-name">Cyber Warrior Program</div>
+        <div class="cert-issuer">GPCSSI — Haryana Police</div>
+        <p class="cert-desc">Government-certified cyber warrior training covering cybercrime investigation, digital forensics, and law-enforcement security protocols.</p>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-status edu-badge">EDUCATION</div>
+        <div class="cert-icon">🎓</div>
+        <div class="cert-name">B.Tech — Cybersecurity</div>
+        <div class="cert-issuer">GNA University, Punjab</div>
+        <p class="cert-desc">Bachelor of Technology with focus on offensive and defensive cybersecurity. Active in CTF competitions and security research labs.</p>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     ARSENAL
+────────────────────────────────────────────────────── -->
+<section id="arsenal" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// ARSENAL</span>
+      <div class="section-cmd">$ ls ~/tools/ --proficiency</div>
+      <div class="view-tabs" data-target="arsenal-grid">
+        <button class="vtab active" data-filter="all">All</button>
+        <button class="vtab" data-filter="offensive">Offensive</button>
+        <button class="vtab" data-filter="recon">Recon</button>
+        <button class="vtab" data-filter="exploit">Exploit</button>
+        <button class="vtab" data-filter="forensics">Forensics</button>
+        <button class="vtab" data-filter="network">Network</button>
+      </div>
+    </div>
+    <div id="arsenal-grid" class="arsenal-grid">
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">⚡</span><span class="tool-name">Metasploit</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">🔍</span><span class="tool-name">Burp Suite Pro</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="exploit"><span class="tool-icon">💉</span><span class="tool-name">SQLMap</span><span class="tool-label exploit">Exploit</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🗺</span><span class="tool-name">Nmap</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">🦈</span><span class="tool-name">Wireshark</span><span class="tool-label network">Network</span></div>
+      <div class="tool-card" data-cat="forensics"><span class="tool-icon">🔬</span><span class="tool-name">Volatility</span><span class="tool-label forensics">Forensics</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🩸</span><span class="tool-name">BloodHound</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">👑</span><span class="tool-name">Cobalt Strike</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="exploit"><span class="tool-icon">📟</span><span class="tool-name">Responder</span><span class="tool-label exploit">Exploit</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🔭</span><span class="tool-name">Shodan</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">📦</span><span class="tool-name">Scapy</span><span class="tool-label network">Network</span></div>
+      <div class="tool-card" data-cat="forensics"><span class="tool-icon">🔎</span><span class="tool-name">Autopsy</span><span class="tool-label forensics">Forensics</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🕸</span><span class="tool-name">Maltego</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">#️⃣</span><span class="tool-name">Hashcat</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">🔑</span><span class="tool-name">John the Ripper</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">📡</span><span class="tool-name">Aircrack-ng</span><span class="tool-label network">Network</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🌐</span><span class="tool-name">OSINT Framework</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="exploit"><span class="tool-icon">🔓</span><span class="tool-name">Impacket Suite</span><span class="tool-label exploit">Exploit</span></div>
+      <div class="tool-card" data-cat="forensics"><span class="tool-icon">💾</span><span class="tool-name">FTK Imager</span><span class="tool-label forensics">Forensics</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">🐉</span><span class="tool-name">Hydra</span><span class="tool-label network">Network</span></div>
+    </div>
+    <div class="arsenal-count"><span id="tool-count">20</span> tools · click any card to expand</div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     CTF WRITEUPS
+────────────────────────────────────────────────────── -->
+<section id="ctf" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// CTF_WRITEUPS_</span>
+      <div class="section-cmd">$ ls ~/ctf/ --writeups <span class="c-dim">// Capture The Flag solutions</span></div>
+    </div>
+    <div class="ctf-stats">
+      <div class="ctf-stat"><span class="stat-num">10+</span><span>Challenges</span></div>
+      <div class="ctf-stat"><span class="stat-num">5</span><span>Platforms</span></div>
+      <div class="ctf-stat"><span class="stat-num">4</span><span>Categories</span></div>
+      <div class="ctf-stat"><span class="stat-num">3</span><span>Hard Solves</span></div>
+    </div>
+    <div class="ctf-grid">
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag red">Web</span><span class="ctf-diff hard">Hard</span></div>
+        <div class="ctf-title">SQL Injection to Shell — Blind SQLi RCE</div>
+        <p class="ctf-desc">Exploited time-based blind SQLi in a login form to dump credentials, then leveraged INTO OUTFILE to write a PHP web shell. Escalated to RCE via Metasploit reverse shell.</p>
+        <div class="ctf-tags"><span class="tag">#SQLi</span><span class="tag">#RCE</span><span class="tag">#PHP</span></div>
+        <div class="ctf-footer"><span>TryHackMe · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag purple">Buffer Overflow</span><span class="ctf-diff hard">Hard</span></div>
+        <div class="ctf-title">Buffer Overflow 101 — ROP Chain to Shell</div>
+        <p class="ctf-desc">Classic stack buffer overflow with NX enabled. Chained ROP gadgets to call system("/bin/sh") using leaked libc base from a format string vulnerability in the same binary.</p>
+        <div class="ctf-tags"><span class="tag">#x86-64</span><span class="tag">#ROP</span><span class="tag">#ret2libc</span></div>
+        <div class="ctf-footer"><span>HackTheBox · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag cyan">Forensics</span><span class="ctf-diff medium">Medium</span></div>
+        <div class="ctf-title">PCAP Hunt — Credential Extraction</div>
+        <p class="ctf-desc">Extracted credentials from unencrypted HTTP POST in a noisy 12MB PCAP. Flag was base64-encoded inside a custom X-Auth-Token header, found using Wireshark display filters.</p>
+        <div class="ctf-tags"><span class="tag">#Wireshark</span><span class="tag">#HTTP</span><span class="tag">#Base64</span></div>
+        <div class="ctf-footer"><span>PicoCTF · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag yellow">Crypto</span><span class="ctf-diff medium">Medium</span></div>
+        <div class="ctf-title">XOR Key Reuse — Crib Dragging Attack</div>
+        <p class="ctf-desc">Two ciphertexts encrypted with the same XOR key. Used crib dragging with common English phrases to recover the keystream and decrypt both messages. Classic OTP misuse.</p>
+        <div class="ctf-tags"><span class="tag">#XOR</span><span class="tag">#CribDrag</span><span class="tag">#OTP Reuse</span></div>
+        <div class="ctf-footer"><span>CTFLearn · 2023</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag green">Steganography</span><span class="ctf-diff easy">Easy</span></div>
+        <div class="ctf-title">Flag in the Noise — LSB Steganography</div>
+        <p class="ctf-desc">Hidden flag encoded in least-significant bits of a PNG image. Extracted using custom Python PIL script after noticing irregular noise patterns in the alpha channel.</p>
+        <div class="ctf-tags"><span class="tag">#PNG</span><span class="tag">#LSB</span><span class="tag">#Python</span></div>
+        <div class="ctf-footer"><span>PicoCTF · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag red">AD / Exploit</span><span class="ctf-diff hard">Hard</span></div>
+        <div class="ctf-title">Kerberoasting to Domain Admin</div>
+        <p class="ctf-desc">Identified service accounts with SPN, requested TGS tickets, cracked offline with Hashcat. Leveraged cracked credentials to perform Pass-the-Hash and reach Domain Admin via DCSync.</p>
+        <div class="ctf-tags"><span class="tag">#Kerberoast</span><span class="tag">#AD</span><span class="tag">#DCSync</span></div>
+        <div class="ctf-footer"><span>HackTheBox · 2025</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     BLOG
+────────────────────────────────────────────────────── -->
+<section id="blog" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// BLOG</span>
+      <div class="section-cmd">$ cat ~/blog/README.md <span class="c-dim">// Security insights & research</span></div>
+    </div>
+    <div class="blog-grid">
+
+      <div class="blog-card featured">
+        <div class="blog-meta"><span class="blog-badge featured-badge">FEATURED</span><span class="tag red">Security</span><span class="blog-date">2026-03-01</span></div>
+        <div class="blog-title">Active Directory Attack Paths: From Initial Access to Domain Admin</div>
+        <p class="blog-excerpt">A deep dive into chaining common AD misconfigurations — Kerberoasting, AS-REP Roasting, ACL abuse, and DCSync — into a full domain compromise walkthrough.</p>
+        <div class="blog-tags"><span class="tag">#ActiveDirectory</span><span class="tag">#Red Team</span><span class="tag">#Windows</span></div>
+        <div class="blog-footer"><span>12 min read</span><a href="#" class="btn-small">$ ./read_more.sh</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-meta"><span class="tag cyan">Web Security</span><span class="blog-date">2026-02-20</span></div>
+        <div class="blog-title">OWASP Top 10 in Practice: Real-World Exploitation Examples</div>
+        <p class="blog-excerpt">Walking through each OWASP Top 10 category with real exploitation demos in a lab environment — from SQLi and IDOR to SSRF and Security Misconfiguration.</p>
+        <div class="blog-tags"><span class="tag">#OWASP</span><span class="tag">#VAPT</span><span class="tag">#BurpSuite</span></div>
+        <div class="blog-footer"><span>10 min read</span><a href="#" class="btn-small">$ ./read_more.sh</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-meta"><span class="tag yellow">OSINT</span><span class="blog-date">2026-02-10</span></div>
+        <div class="blog-title">Passive Reconnaissance: Building a Target Profile with Open Sources</div>
+        <p class="blog-excerpt">How to conduct zero-footprint OSINT — aggregating Shodan data, WHOIS lookups, LinkedIn dorks, Google hacking, and Maltego graphs to build a comprehensive target profile before any active scanning.</p>
+        <div class="blog-tags"><span class="tag">#OSINT</span><span class="tag">#Recon</span><span class="tag">#Shodan</span></div>
+        <div class="blog-footer"><span>8 min read</span><a href="#" class="btn-small">$ ./read_more.sh</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-meta"><span class="tag purple">Forensics</span><span class="blog-date">2026-01-28</span></div>
+        <div class="blog-title">Memory Forensics with Volatility 3: A Practical Guide</div>
+        <p class="blog-excerpt">Practical guide to acquiring and analyzing memory dumps using Volatility 3 — process injection, malware artifacts, credential extraction, and timeline reconstruction.</p>
+        <div class="blog-tags"><span class="tag">#Volatility</span><span class="tag">#Memory</span><span class="tag">#Forensics</span></div>
+        <div class="blog-footer"><span>15 min read</span><a href="#" class="btn-small">$ ./read_more.sh</a></div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     TESTIMONIALS
+────────────────────────────────────────────────────── -->
+<section id="testimonials" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// TESTIMONIALS</span>
+      <div class="section-cmd">$ cat ~/testimonials/reviews.json <span class="c-dim">// Feedback</span></div>
+    </div>
+    <div class="testi-grid">
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <blockquote>"Harjinder's dedication to learning and his methodical approach to AD exploitation is impressive for someone at his stage. He approached our internal CTF with the mindset of a seasoned professional."</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar">MK</div>
+          <div><div class="testi-name">Mentor, Cynox Security LLP</div><div class="testi-role c-dim">Security Lead</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <blockquote>"Sharp analytical skills and a genuine passion for cybersecurity. Harjinder consistently went beyond the assigned scope to understand the underlying mechanisms of each vulnerability."</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar">PR</div>
+          <div><div class="testi-name">Senior Analyst, CyberYaan</div><div class="testi-role c-dim">Security Analyst</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★☆</div>
+        <blockquote>"A committed and technically sound intern. His understanding of digital forensics workflows and evidence handling was solid. Looking forward to seeing his progression as he pursues CPTS."</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar">GH</div>
+          <div><div class="testi-name">Supervisor, GPCSSI</div><div class="testi-role c-dim">Haryana Police Cyber Cell</div></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     CONTACT
+────────────────────────────────────────────────────── -->
+<section id="contact" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// CONTACT</span>
+      <div class="section-cmd">$ ssh harjinder@portfolio.local</div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-left">
+        <div class="contact-identity">
+          <div class="ci-comment">// IDENTITY</div>
+          <div class="ci-name">HARJINDER SINGH</div>
+          <div class="ci-title c-cyan">Penetration Tester · Security Analyst</div>
+          <div class="ci-sub c-dim">Trainee @ Cynox Security LLP · Intern @ CyberYaan & GPCSSI</div>
+          <div class="ci-location">📍 Ludhiana, Punjab, India</div>
+          <div class="social-links">
+            <a href="https://github.com/h4rj1nd3r51ngh" target="_blank" class="social-link">
+              <span class="social-icon">GH</span> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank" class="social-link">
+              <span class="social-icon">LI</span> LinkedIn
+            </a>
+            <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank" class="social-link">
+              <span class="social-icon">THM</span> TryHackMe
+            </a>
+            <a href="mailto:harjinder.khalsa4@gmail.com" class="social-link">
+              <span class="social-icon">📧</span> Email
+            </a>
+          </div>
+          <div class="sys-status">
+            <div class="ss-row"><span class="ss-key">ENCRYPTION</span><span class="ss-val c-green">AES-256-GCM</span></div>
+            <div class="ss-row"><span class="ss-key">SESSION</span><span class="ss-val c-green">ACTIVE</span></div>
+            <div class="ss-row"><span class="ss-key">UPTIME</span><span class="ss-val">3+ YRS</span></div>
+            <div class="ss-row"><span class="ss-key">STATUS</span><span class="ss-val c-cyan">VERIFIED · WHITE HAT</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-right">
+        <form class="contact-form" id="contact-form">
+          <div class="form-group">
+            <label class="form-label">$ name:</label>
+            <input type="text" class="form-input" placeholder="your name..." required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">$ email:</label>
+            <input type="email" class="form-input" placeholder="your@email.com" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">$ subject:</label>
+            <input type="text" class="form-input" placeholder="pentest inquiry / collaboration..." required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">$ message:</label>
+            <textarea class="form-input form-textarea" rows="5" placeholder="type your message..." required></textarea>
+          </div>
+          <button type="submit" class="btn-terminal full-width">$ ./send_message.sh</button>
+          <div id="form-status" class="form-status hidden"></div>
+        </form>
+      </div>
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span>root@h4rj1nd3r51ngh ~ © 2026 | Built with HTML · CSS · JS + terminal aesthetics</span>
+    <span class="c-green">SECURE</span>
+    <button class="btn-small" onclick="window.scrollTo({top:0,behavior:'smooth'})">scroll --top</button>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
 </body>
 </html>
