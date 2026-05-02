@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matrix">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>h4rj1nd3r51ngh — Penetration Tester</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── WELCOME MODAL ─────────────────────────────────── -->
+<div id="welcome-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+      <span class="modal-title">welcome.sh</span>
+    </div>
+    <div class="modal-body">
+      <p class="modal-line">Welcome to <span class="c-green">Harjinder's Terminal</span> 🔐</p>
+      <ul class="modal-tips">
+        <li>Press <kbd>`</kbd> to enter CLI mode</li>
+        <li>Press <kbd>Ctrl+Shift+H</kbd> for Hacker Showcase</li>
+        <li>Press <kbd>?</kbd> for keyboard shortcuts</li>
+        <li>Click <span class="c-cyan">[theme]</span> to cycle 4 themes</li>
+      </ul>
+    </div>
+    <button id="modal-close" class="btn-terminal">[ Got it! ]</button>
+  </div>
+</div>
+
+<!-- ── KEYBOARD SHORTCUTS MODAL ──────────────────────── -->
+<div id="shortcuts-modal" class="modal-overlay hidden">
+  <div class="modal-box wide">
+    <div class="modal-header">
+      <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+      <span class="modal-title">keyboard-shortcuts.conf</span>
+      <button class="modal-x" id="close-shortcuts">✕</button>
+    </div>
+    <div class="shortcuts-grid">
+      <div><kbd>`</kbd><span>Toggle CLI mode</span></div>
+      <div><kbd>?</kbd><span>Show shortcuts</span></div>
+      <div><kbd>Ctrl+Shift+H</kbd><span>Hacker showcase</span></div>
+      <div><kbd>Esc</kbd><span>Close modals / exit CLI</span></div>
+      <div><kbd>G+H</kbd><span>Go to Hero</span></div>
+      <div><kbd>G+A</kbd><span>Go to About</span></div>
+      <div><kbd>G+S</kbd><span>Go to Skills</span></div>
+      <div><kbd>G+P</kbd><span>Go to Projects</span></div>
+      <div><kbd>G+C</kbd><span>Go to Contact</span></div>
+      <div><kbd>T</kbd><span>Cycle theme</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HACKER SHOWCASE OVERLAY ────────────────────────── -->
+<div id="hacker-overlay" class="hacker-overlay hidden">
+  <canvas id="matrix-canvas"></canvas>
+  <div class="hacker-center">
+    <div class="hacker-text">INITIALIZING...</div>
+    <div class="hacker-sub">[ ACCESS GRANTED — ROOT ]</div>
+    <button id="exit-hacker" class="btn-terminal">[ EXIT ]</button>
+  </div>
+</div>
+
+<!-- ── CLI OVERLAY ────────────────────────────────────── -->
+<div id="cli-overlay" class="cli-overlay hidden">
+  <div class="cli-container">
+    <div class="cli-header">
+      <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+      <span class="cli-title">h4rj1nd3r51ngh@portfolio:~</span>
+      <button id="cli-close" class="modal-x">✕</button>
+    </div>
+    <div id="cli-output" class="cli-output"></div>
+    <div class="cli-input-row">
+      <span class="cli-prompt">h4rj1nd3r@portfolio:~$</span>
+      <input id="cli-input" type="text" class="cli-input" placeholder="type 'help' for commands..." autocomplete="off" spellcheck="false"/>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOP NAVBAR ─────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand">
+    <span class="prompt-sym">$</span>
+    <span class="nav-name">h4rj1nd3r51ngh</span>
+    <span class="blink-cursor">█</span>
+  </div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#certifications">certs</a></li>
+    <li><a href="#arsenal">arsenal</a></li>
+    <li><a href="#ctf">ctf</a></li>
+    <li><a href="#blog">blog</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button id="theme-btn" class="nav-btn" title="Cycle theme">[theme]</button>
+    <button id="cli-btn" class="nav-btn" title="Open CLI">[cli]</button>
+    <button class="nav-burger" id="nav-burger">☰</button>
+  </div>
+</nav>
+
+<!-- ── STATUS BAR ─────────────────────────────────────── -->
+<div class="status-bar">
+  <span>● <span id="section-display">about</span></span>
+  <span id="scroll-pct">0%</span>
+  <span>scrolled</span>
+</div>
+
+<!-- ─────────────────────────────────────────────────────
+     HERO
+────────────────────────────────────────────────────── -->
+<section id="hero" class="section-hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-content">
+    <!-- BOOT TEXT -->
+    <div class="boot-sequence" id="boot-seq">
+      <div class="boot-line"> > Establishing encrypted tunnel... <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > TLS 1.3 — AES-256-GCM — SHA-512 <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > Biometric + OTP verified: <span class="c-cyan">HARJINDER SINGH</span> <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > Clearance granted: <span class="c-yellow">PENDING / WHITE HAT</span> <span class="c-green">[OK]</span></div>
+      <div class="boot-line"> > Defense portal online. Session active. <span class="c-green">[OK]</span></div>
+    </div>
+
+    <div class="hero-main" id="hero-main" style="opacity:0">
+      <!-- LEFT -->
+      <div class="hero-left">
+        <div class="hero-comment">// OPERATOR IDENTITY</div>
+        <h1 class="hero-name">HARJINDER<br/><span class="c-green">SINGH</span></h1>
+        <div class="hero-role">
+          <span class="prompt-sym">$</span>
+          <span id="typewriter" class="typewriter"></span>
+          <span class="blink-cursor">█</span>
+        </div>
+        <p class="hero-bio">
+          Penetration Tester &amp; Security Analyst with a hands-on trajectory in red team operations,
+          web application testing, and AD exploitation. Interning at Cynox Security LLP, CyberYaan
+          &amp; GPCSSI (Haryana Police). Pursuing HTB CPTS &amp; CRTO.<br/>
+          <span class="c-dim">All work is legal, authorized, and white-hat.</span>
+        </p>
+        <div class="hero-tags">
+          <span class="tag">Red Teaming</span>
+          <span class="tag">VAPT</span>
+          <span class="tag">AD Exploitation</span>
+          <span class="tag">OSINT</span>
+          <span class="tag">Web Shells</span>
+          <span class="tag">White Hat</span>
+        </div>
+        <div class="hero-btns">
+          <a href="#projects" class="btn-terminal">$ ./view_projects.sh</a>
+          <a href="#contact" class="btn-outline">$ ./contact.sh</a>
+        </div>
+        <div class="hero-socials">
+          <a href="https://github.com/h4rj1nd3r51ngh" target="_blank" title="GitHub">GH</a>
+          <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank" title="LinkedIn">LI</a>
+          <a href="https://tryhackme.com/p/h4rj1nd3r51ngh" target="_blank" title="TryHackMe">THM</a>
+          <a href="mailto:harjinder.khalsa4@gmail.com" title="Email">ML</a>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="hero-right">
+        <!-- NEOFETCH card -->
+        <div class="neo-card">
+          <div class="neo-header">
+            <span class="modal-dot red"></span><span class="modal-dot yellow"></span><span class="modal-dot green"></span>
+            <span class="neo-cmd">$ neofetch --minimal</span>
+          </div>
+          <div class="neo-body">
+            <div class="neo-row"><span class="neo-key">USER</span><span class="neo-val c-green">h4rj1nd3r51ngh</span></div>
+            <div class="neo-row"><span class="neo-key">HOST</span><span class="neo-val">portfolio.local</span></div>
+            <div class="neo-row"><span class="neo-key">LOCATION</span><span class="neo-val">Ludhiana, Punjab, IN</span></div>
+            <div class="neo-row"><span class="neo-key">ROLE</span><span class="neo-val c-cyan">Penetration Tester</span></div>
+            <div class="neo-row"><span class="neo-key">STATUS</span><span class="neo-val c-green">ACTIVE · WHITE HAT</span></div>
+            <div class="neo-row"><span class="neo-key">CLEARANCE</span><span class="neo-val c-yellow">AUTHORIZED</span></div>
+            <div class="neo-row"><span class="neo-key">UPTIME</span><span class="neo-val">3+ YRS</span></div>
+            <div class="neo-row"><span class="neo-key">SESSION</span><span class="neo-val c-green">ACTIVE</span></div>
+            <div class="neo-row"><span class="neo-key">CERTS (WIP)</span><span class="neo-val">HTB CPTS · CRTO</span></div>
+            <div class="neo-divider"></div>
+            <div class="neo-colors">
+              <span style="background:#ff5f57"></span><span style="background:#febc2e"></span>
+              <span style="background:#28c840"></span><span style="background:#00d7ff"></span>
+              <span style="background:#a855f7"></span><span style="background:#ffffff"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE ACTIVITY -->
+        <div class="live-card">
+          <div class="live-header">// LIVE ACTIVITY</div>
+          <div class="live-item critical"><span class="live-badge critical">ACTIVE</span> Training session: CPTS Path — lab active</div>
+          <div class="live-item info"><span class="live-badge info">INFO</span> Cynox Security LLP — pentest engagement</div>
+          <div class="live-item info"><span class="live-badge warn">WARN</span> CRTO course review — 37% complete</div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+          <div class="stat-box"><span class="stat-num" data-target="3">0</span><span class="stat-lbl">+ YRS<br/>LEARNING</span></div>
+          <div class="stat-box"><span class="stat-num" data-target="3">0</span><span class="stat-lbl">ACTIVE<br/>INTERNSHIPS</span></div>
+          <div class="stat-box"><span class="stat-num" data-target="20">0</span><span class="stat-lbl">+ TOOLS<br/>ARSENAL</span></div>
+          <div class="stat-box"><span class="stat-num" data-target="10">0</span><span class="stat-lbl">+ CTF<br/>CHALLENGES</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL ↓</div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     ABOUT
+────────────────────────────────────────────────────── -->
+<section id="about" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// ABOUT</span>
+      <div class="section-cmd">$ cat /home/harjinder/about.txt</div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text term-block">
+        <p>Name: <span class="c-green">Harjinder Singh</span> (aka <span class="c-cyan">Ankit</span>)</p>
+        <p>Handle: <span class="c-green">h4rj1nd3r51ngh</span></p>
+        <p>Location: <span class="c-cyan">Ludhiana, Punjab, India</span></p>
+        <p>University: <span class="c-yellow">GNA University</span></p>
+        <br/>
+        <p>
+          I'm a cybersecurity enthusiast transitioning from academic learning to real-world professional
+          application. I operate within legal penetration testing teams, performing full-stack offensive
+          security assessments — from initial reconnaissance to exploitation and reporting.
+        </p>
+        <br/>
+        <p>
+          Currently interning at <span class="c-cyan">Cynox Security LLP</span>, <span class="c-cyan">CyberYaan</span>,
+          and working as a <span class="c-green">Cyber Warrior Intern</span> at GPCSSI (Haryana Police).
+          I believe in hands-on, lab-based skill building and pursue certifications that reflect real-world competency.
+        </p>
+        <br/>
+        <p class="c-dim">All cybersecurity work described here is authorized, legal, and white-hat.</p>
+      </div>
+      <div class="about-radar">
+        <div class="radar-title">// CAPABILITY RADAR</div>
+        <div class="radar-wrap">
+          <canvas id="radar-chart" width="260" height="260"></canvas>
+        </div>
+        <div class="radar-labels">
+          <span>RECON</span><span>EXPLOIT</span><span>SIGINT</span>
+          <span>VAPT</span><span>OSINT</span><span>DEFENCE</span>
+        </div>
+      </div>
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     SKILLS
+────────────────────────────────────────────────────── -->
+<section id="skills" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// SKILLS</span>
+      <div class="section-cmd">$ apt list --installed <span class="c-dim">// View technical expertise</span></div>
+    </div>
+    <div class="skills-grid">
+
+      <div class="skill-category">
+        <div class="skill-cat-title">[ Offensive Security ]</div>
+        <div class="skill-item"><span class="skill-name">Penetration Testing</span><div class="skill-bar"><div class="skill-fill" data-pct="85"></div></div><span class="skill-pct">85%</span></div>
+        <div class="skill-item"><span class="skill-name">Active Directory Exploitation</span><div class="skill-bar"><div class="skill-fill" data-pct="78"></div></div><span class="skill-pct">78%</span></div>
+        <div class="skill-item"><span class="skill-name">Web Application Testing</span><div class="skill-bar"><div class="skill-fill" data-pct="80"></div></div><span class="skill-pct">80%</span></div>
+        <div class="skill-item"><span class="skill-name">Metasploit Framework</span><div class="skill-bar"><div class="skill-fill" data-pct="82"></div></div><span class="skill-pct">82%</span></div>
+        <div class="skill-item"><span class="skill-name">Red Teaming (CRTO in progress)</span><div class="skill-bar"><div class="skill-fill" data-pct="55"></div></div><span class="skill-pct">55%</span></div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-cat-title">[ Recon & OSINT ]</div>
+        <div class="skill-item"><span class="skill-name">Nmap / Network Scanning</span><div class="skill-bar"><div class="skill-fill" data-pct="90"></div></div><span class="skill-pct">90%</span></div>
+        <div class="skill-item"><span class="skill-name">OSINT Techniques</span><div class="skill-bar"><div class="skill-fill" data-pct="75"></div></div><span class="skill-pct">75%</span></div>
+        <div class="skill-item"><span class="skill-name">Burp Suite Pro</span><div class="skill-bar"><div class="skill-fill" data-pct="83"></div></div><span class="skill-pct">83%</span></div>
+        <div class="skill-item"><span class="skill-name">Shodan / Maltego</span><div class="skill-bar"><div class="skill-fill" data-pct="70"></div></div><span class="skill-pct">70%</span></div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-cat-title">[ Tools & Platforms ]</div>
+        <div class="skill-item"><span class="skill-name">Kali Linux</span><div class="skill-bar"><div class="skill-fill" data-pct="92"></div></div><span class="skill-pct">92%</span></div>
+        <div class="skill-item"><span class="skill-name">Wireshark / Tcpdump</span><div class="skill-bar"><div class="skill-fill" data-pct="76"></div></div><span class="skill-pct">76%</span></div>
+        <div class="skill-item"><span class="skill-name">Python Scripting</span><div class="skill-bar"><div class="skill-fill" data-pct="72"></div></div><span class="skill-pct">72%</span></div>
+        <div class="skill-item"><span class="skill-name">Bash / Shell Scripting</span><div class="skill-bar"><div class="skill-fill" data-pct="78"></div></div><span class="skill-pct">78%</span></div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     EXPERIENCE
+────────────────────────────────────────────────────── -->
+<section id="experience" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// EXPERIENCE</span>
+      <div class="section-cmd">$ git log --format="%h %s" --reverse <span class="c-dim">// Work history</span></div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item active">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge active-badge">ACTIVE</span><span class="tl-date">2025 — Present</span></div>
+          <div class="tl-role">Trainee Security Analyst</div>
+          <div class="tl-company">Cynox Security LLP</div>
+          <p class="tl-desc">Hands-on penetration testing across web, network, and AD environments. Conducting authorized VAPT engagements, writing detailed security reports, and collaborating on red team exercises.</p>
+          <div class="tl-tags"><span class="tag">VAPT</span><span class="tag">Active Directory</span><span class="tag">Reporting</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item active">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge active-badge">ACTIVE</span><span class="tl-date">2025 — Present</span></div>
+          <div class="tl-role">Security Analyst Intern</div>
+          <div class="tl-company">CyberYaan</div>
+          <p class="tl-desc">Supporting security operations including vulnerability assessment, web application testing, and threat analysis. Assisting senior analysts with penetration test documentation and client communication.</p>
+          <div class="tl-tags"><span class="tag">Web App Testing</span><span class="tag">Vuln Assessment</span><span class="tag">SOC</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item active">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge govt-badge">GOVT</span><span class="tl-date">2025 — Present</span></div>
+          <div class="tl-role">Cyber Warrior Intern</div>
+          <div class="tl-company">GPCSSI — Haryana Police</div>
+          <p class="tl-desc">Working with the Government of Haryana's Cyber Security unit. Exposure to law-enforcement grade cybercrime investigation workflows, digital forensics, and threat intelligence practices.</p>
+          <div class="tl-tags"><span class="tag">Digital Forensics</span><span class="tag">Threat Intel</span><span class="tag">Govt Sec</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-meta"><span class="tl-badge edu-badge">EDUCATION</span><span class="tl-date">2023 — Present</span></div>
+          <div class="tl-role">B.Tech — Cybersecurity</div>
+          <div class="tl-company">GNA University</div>
+          <p class="tl-desc">Pursuing a Bachelor of Technology in Cybersecurity. Active participation in CTF competitions, security labs, and research projects on offensive and defensive security topics.</p>
+          <div class="tl-tags"><span class="tag">CTF</span><span class="tag">Research</span><span class="tag">GNA University</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     PROJECTS
+────────────────────────────────────────────────────── -->
+<section id="projects" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// PROJECTS</span>
+      <div class="section-cmd">$ ls ~/projects/ <span class="c-dim">// Security research & labs</span></div>
+      <div class="view-tabs" data-target="projects-grid">
+        <button class="vtab active" data-view="grid">grid</button>
+        <button class="vtab" data-view="list">list</button>
+        <button class="vtab" data-view="compact">compact</button>
+      </div>
+    </div>
+    <div id="projects-grid" class="projects-grid view-grid">
+
+      <div class="project-card" data-category="offensive">
+        <div class="project-header">
+          <span class="project-icon">⚔</span>
+          <div class="project-badges"><span class="tag red">Offensive</span></div>
+        </div>
+        <div class="project-title">Active Directory Lab — Full Compromise Chain</div>
+        <p class="project-desc">Built a local AD lab (Windows Server 2019 + endpoints) and chained: Kerberoasting → Pass-the-Hash → DCSync → Domain Admin compromise. Documented full attack path and mitigations.</p>
+        <div class="project-tags"><span class="tag">BloodHound</span><span class="tag">Impacket</span><span class="tag">Mimikatz</span><span class="tag">AD</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/ad-compromise-lab</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="web">
+        <div class="project-header">
+          <span class="project-icon">🕸</span>
+          <div class="project-badges"><span class="tag cyan">Web</span></div>
+        </div>
+        <div class="project-title">Web Application Pentest Report (DVWA + Custom)</div>
+        <p class="project-desc">Full VAPT assessment on DVWA and a custom PHP app. Identified and exploited SQLi, XSS, IDOR, File Upload bypass, Command Injection. Wrote a professional-grade findings report.</p>
+        <div class="project-tags"><span class="tag">SQLMap</span><span class="tag">Burp Suite</span><span class="tag">OWASP Top 10</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/webapp-pentest</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="recon">
+        <div class="project-header">
+          <span class="project-icon">🔭</span>
+          <div class="project-badges"><span class="tag yellow">OSINT</span></div>
+        </div>
+        <div class="project-title">OSINT Investigation Framework (Custom Script)</div>
+        <p class="project-desc">Python-based OSINT automation tool that aggregates data from multiple sources (Shodan, DNS, WHOIS, social scraping) to build a target profile. CLI-driven with JSON output for reporting.</p>
+        <div class="project-tags"><span class="tag">Python</span><span class="tag">Shodan API</span><span class="tag">OSINT</span><span class="tag">Automation</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/osint-framework</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="network">
+        <div class="project-header">
+          <span class="project-icon">📡</span>
+          <div class="project-badges"><span class="tag purple">Network</span></div>
+        </div>
+        <div class="project-title">Network Traffic Analysis & Anomaly Detection</div>
+        <p class="project-desc">Captured and analyzed PCAP files from a simulated corporate network. Identified lateral movement, C2 beaconing, data exfiltration patterns using Wireshark + custom Python parsers.</p>
+        <div class="project-tags"><span class="tag">Wireshark</span><span class="tag">Python</span><span class="tag">Zeek</span><span class="tag">PCAP</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/network-analysis</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="offensive">
+        <div class="project-header">
+          <span class="project-icon">💉</span>
+          <div class="project-badges"><span class="tag red">Exploit Dev</span></div>
+        </div>
+        <div class="project-title">Web Shell Lab — Upload & Persistence Techniques</div>
+        <p class="project-desc">Researched and tested various web shell upload techniques against hardened environments. Built a test harness to validate WAF bypass methods and document server-side persistence mechanisms.</p>
+        <div class="project-tags"><span class="tag">PHP</span><span class="tag">WAF Bypass</span><span class="tag">Web Shells</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/webshell-lab</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+      <div class="project-card" data-category="forensics">
+        <div class="project-header">
+          <span class="project-icon">🔬</span>
+          <div class="project-badges"><span class="tag green">Forensics</span></div>
+        </div>
+        <div class="project-title">Digital Forensics Case Simulation</div>
+        <p class="project-desc">Simulated a cybercrime investigation for GPCSSI internship — disk imaging, memory forensics with Volatility, timeline analysis, evidence chain-of-custody documentation.</p>
+        <div class="project-tags"><span class="tag">Volatility</span><span class="tag">Autopsy</span><span class="tag">FTK Imager</span></div>
+        <div class="project-footer">
+          <span class="c-dim">~/projects/forensics-case</span>
+          <a href="#" class="btn-small">▸ View</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     CERTIFICATIONS / EDUCATION
+────────────────────────────────────────────────────── -->
+<section id="certifications" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// CERTIFICATIONS</span>
+      <div class="section-cmd">$ gpg --list-keys --keyring credentials <span class="c-dim">// Credentials & education</span></div>
+    </div>
+
+    <div class="cert-grid">
+
+      <div class="cert-card wip">
+        <div class="cert-status wip-badge">IN PROGRESS — 2026</div>
+        <div class="cert-icon">🏆</div>
+        <div class="cert-name">HTB Certified Penetration Testing Specialist</div>
+        <div class="cert-issuer">Hack The Box</div>
+        <p class="cert-desc">Hands-on, lab-based certification covering the full pentest lifecycle. Target completion: mid-2026 (3–4 month path).</p>
+        <div class="cert-bar-wrap"><div class="cert-bar"><div class="cert-fill" data-pct="40" style="width:0%"></div></div><span class="cert-pct">40%</span></div>
+      </div>
+
+      <div class="cert-card wip">
+        <div class="cert-status wip-badge">IN REVIEW — 2026</div>
+        <div class="cert-icon">🔴</div>
+        <div class="cert-name">Certified Red Team Operator (CRTO)</div>
+        <div class="cert-issuer">Zero-Point Security</div>
+        <p class="cert-desc">Advanced red team adversary simulation certification using Cobalt Strike tradecraft. Currently reviewing course material — 37% complete.</p>
+        <div class="cert-bar-wrap"><div class="cert-bar"><div class="cert-fill" data-pct="37" style="width:0%"></div></div><span class="cert-pct">37%</span></div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-status done-badge">COMPLETED</div>
+        <div class="cert-icon">📡</div>
+        <div class="cert-name">Cyber Warrior Program</div>
+        <div class="cert-issuer">GPCSSI — Haryana Police</div>
+        <p class="cert-desc">Government-certified cyber warrior training covering cybercrime investigation, digital forensics, and law-enforcement security protocols.</p>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-status edu-badge">EDUCATION</div>
+        <div class="cert-icon">🎓</div>
+        <div class="cert-name">B.Tech — Cybersecurity</div>
+        <div class="cert-issuer">GNA University, Punjab</div>
+        <p class="cert-desc">Bachelor of Technology with focus on offensive and defensive cybersecurity. Active in CTF competitions and security research labs.</p>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     ARSENAL
+────────────────────────────────────────────────────── -->
+<section id="arsenal" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// ARSENAL</span>
+      <div class="section-cmd">$ ls ~/tools/ --proficiency</div>
+      <div class="view-tabs" data-target="arsenal-grid">
+        <button class="vtab active" data-filter="all">All</button>
+        <button class="vtab" data-filter="offensive">Offensive</button>
+        <button class="vtab" data-filter="recon">Recon</button>
+        <button class="vtab" data-filter="exploit">Exploit</button>
+        <button class="vtab" data-filter="forensics">Forensics</button>
+        <button class="vtab" data-filter="network">Network</button>
+      </div>
+    </div>
+    <div id="arsenal-grid" class="arsenal-grid">
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">⚡</span><span class="tool-name">Metasploit</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">🔍</span><span class="tool-name">Burp Suite Pro</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="exploit"><span class="tool-icon">💉</span><span class="tool-name">SQLMap</span><span class="tool-label exploit">Exploit</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🗺</span><span class="tool-name">Nmap</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">🦈</span><span class="tool-name">Wireshark</span><span class="tool-label network">Network</span></div>
+      <div class="tool-card" data-cat="forensics"><span class="tool-icon">🔬</span><span class="tool-name">Volatility</span><span class="tool-label forensics">Forensics</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🩸</span><span class="tool-name">BloodHound</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">👑</span><span class="tool-name">Cobalt Strike</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="exploit"><span class="tool-icon">📟</span><span class="tool-name">Responder</span><span class="tool-label exploit">Exploit</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🔭</span><span class="tool-name">Shodan</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">📦</span><span class="tool-name">Scapy</span><span class="tool-label network">Network</span></div>
+      <div class="tool-card" data-cat="forensics"><span class="tool-icon">🔎</span><span class="tool-name">Autopsy</span><span class="tool-label forensics">Forensics</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🕸</span><span class="tool-name">Maltego</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">#️⃣</span><span class="tool-name">Hashcat</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="offensive"><span class="tool-icon">🔑</span><span class="tool-name">John the Ripper</span><span class="tool-label offensive">Offensive</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">📡</span><span class="tool-name">Aircrack-ng</span><span class="tool-label network">Network</span></div>
+      <div class="tool-card" data-cat="recon"><span class="tool-icon">🌐</span><span class="tool-name">OSINT Framework</span><span class="tool-label recon">Recon</span></div>
+      <div class="tool-card" data-cat="exploit"><span class="tool-icon">🔓</span><span class="tool-name">Impacket Suite</span><span class="tool-label exploit">Exploit</span></div>
+      <div class="tool-card" data-cat="forensics"><span class="tool-icon">💾</span><span class="tool-name">FTK Imager</span><span class="tool-label forensics">Forensics</span></div>
+      <div class="tool-card" data-cat="network"><span class="tool-icon">🐉</span><span class="tool-name">Hydra</span><span class="tool-label network">Network</span></div>
+    </div>
+    <div class="arsenal-count"><span id="tool-count">20</span> tools · click any card to expand</div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     CTF WRITEUPS
+────────────────────────────────────────────────────── -->
+<section id="ctf" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// CTF_WRITEUPS_</span>
+      <div class="section-cmd">$ ls ~/ctf/ --writeups <span class="c-dim">// Capture The Flag solutions</span></div>
+    </div>
+    <div class="ctf-stats">
+      <div class="ctf-stat"><span class="stat-num">10+</span><span>Challenges</span></div>
+      <div class="ctf-stat"><span class="stat-num">5</span><span>Platforms</span></div>
+      <div class="ctf-stat"><span class="stat-num">4</span><span>Categories</span></div>
+      <div class="ctf-stat"><span class="stat-num">3</span><span>Hard Solves</span></div>
+    </div>
+    <div class="ctf-grid">
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag red">Web</span><span class="ctf-diff hard">Hard</span></div>
+        <div class="ctf-title">SQL Injection to Shell — Blind SQLi RCE</div>
+        <p class="ctf-desc">Exploited time-based blind SQLi in a login form to dump credentials, then leveraged INTO OUTFILE to write a PHP web shell. Escalated to RCE via Metasploit reverse shell.</p>
+        <div class="ctf-tags"><span class="tag">#SQLi</span><span class="tag">#RCE</span><span class="tag">#PHP</span></div>
+        <div class="ctf-footer"><span>TryHackMe · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag purple">Buffer Overflow</span><span class="ctf-diff hard">Hard</span></div>
+        <div class="ctf-title">Buffer Overflow 101 — ROP Chain to Shell</div>
+        <p class="ctf-desc">Classic stack buffer overflow with NX enabled. Chained ROP gadgets to call system("/bin/sh") using leaked libc base from a format string vulnerability in the same binary.</p>
+        <div class="ctf-tags"><span class="tag">#x86-64</span><span class="tag">#ROP</span><span class="tag">#ret2libc</span></div>
+        <div class="ctf-footer"><span>HackTheBox · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag cyan">Forensics</span><span class="ctf-diff medium">Medium</span></div>
+        <div class="ctf-title">PCAP Hunt — Credential Extraction</div>
+        <p class="ctf-desc">Extracted credentials from unencrypted HTTP POST in a noisy 12MB PCAP. Flag was base64-encoded inside a custom X-Auth-Token header, found using Wireshark display filters.</p>
+        <div class="ctf-tags"><span class="tag">#Wireshark</span><span class="tag">#HTTP</span><span class="tag">#Base64</span></div>
+        <div class="ctf-footer"><span>PicoCTF · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag yellow">Crypto</span><span class="ctf-diff medium">Medium</span></div>
+        <div class="ctf-title">XOR Key Reuse — Crib Dragging Attack</div>
+        <p class="ctf-desc">Two ciphertexts encrypted with the same XOR key. Used crib dragging with common English phrases to recover the keystream and decrypt both messages. Classic OTP misuse.</p>
+        <div class="ctf-tags"><span class="tag">#XOR</span><span class="tag">#CribDrag</span><span class="tag">#OTP Reuse</span></div>
+        <div class="ctf-footer"><span>CTFLearn · 2023</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag green">Steganography</span><span class="ctf-diff easy">Easy</span></div>
+        <div class="ctf-title">Flag in the Noise — LSB Steganography</div>
+        <p class="ctf-desc">Hidden flag encoded in least-significant bits of a PNG image. Extracted using custom Python PIL script after noticing irregular noise patterns in the alpha channel.</p>
+        <div class="ctf-tags"><span class="tag">#PNG</span><span class="tag">#LSB</span><span class="tag">#Python</span></div>
+        <div class="ctf-footer"><span>PicoCTF · 2024</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-meta"><span class="tag red">AD / Exploit</span><span class="ctf-diff hard">Hard</span></div>
+        <div class="ctf-title">Kerberoasting to Domain Admin</div>
+        <p class="ctf-desc">Identified service accounts with SPN, requested TGS tickets, cracked offline with Hashcat. Leveraged cracked credentials to perform Pass-the-Hash and reach Domain Admin via DCSync.</p>
+        <div class="ctf-tags"><span class="tag">#Kerberoast</span><span class="tag">#AD</span><span class="tag">#DCSync</span></div>
+        <div class="ctf-footer"><span>HackTheBox · 2025</span><a href="#" class="btn-small">▸ View writeup</a></div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     BLOG
+────────────────────────────────────────────────────── -->
+<section id="blog" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// BLOG</span>
+      <div class="section-cmd">$ cat ~/blog/README.md <span class="c-dim">// Security insights & research</span></div>
+    </div>
+    <div class="blog-grid">
+
+      <div class="blog-card">
+        <div class="blog-meta"><span class="tag red">TOOL</span><span class="blog-date">02-05-2026</span></div>
+        <div class="blog-title">NetExec-CheatSheet</div>
+        <p class="blog-excerpt">COMPLETE CHEAT SHEET + OPSEC GUIDE.</p>
+        <div class="blog-tags"><span class="tag">#NetExec</span><span class="tag">#Red Team</span><span class="tag">#Windows</span></div>
+        <div class="blog-footer"><span>12 min read</span><a href="./netexec-cheatsheet.html" class="btn-small">./netexec-cheatsheet.html</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-meta"><span class="tag cyan">TOOL</span><span class="blog-date">02-05-2026</span></div>
+        <div class="blog-title">impacket-cheatsheet</div>
+        <p class="blog-excerpt">COMPLETE CHEAT SHEET + OPSEC GUIDE.</p>
+        <div class="blog-tags"><span class="tag">#IMPACKET</span><span class="tag">#Red Team</span><span class="tag">#Active Directory</span></div>
+        <div class="blog-footer"><span>20 min read</span><a href="./impacket-cheatsheet.html" class="btn-small">$ ./impacket-cheatsheet.html</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-meta"><span class="tag yellow">OSINT</span><span class="blog-date">2026-02-10</span></div>
+        <div class="blog-title">Passive Reconnaissance: Building a Target Profile with Open Sources</div>
+        <p class="blog-excerpt">How to conduct zero-footprint OSINT — aggregating Shodan data, WHOIS lookups, LinkedIn dorks, Google hacking, and Maltego graphs to build a comprehensive target profile before any active scanning.</p>
+        <div class="blog-tags"><span class="tag">#OSINT</span><span class="tag">#Recon</span><span class="tag">#Shodan</span></div>
+        <div class="blog-footer"><span>8 min read</span><a href="#" class="btn-small">$ ./read_more.sh</a></div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-meta"><span class="tag purple">Forensics</span><span class="blog-date">2026-01-28</span></div>
+        <div class="blog-title">Memory Forensics with Volatility 3: A Practical Guide</div>
+        <p class="blog-excerpt">Practical guide to acquiring and analyzing memory dumps using Volatility 3 — process injection, malware artifacts, credential extraction, and timeline reconstruction.</p>
+        <div class="blog-tags"><span class="tag">#Volatility</span><span class="tag">#Memory</span><span class="tag">#Forensics</span></div>
+        <div class="blog-footer"><span>15 min read</span><a href="#" class="btn-small">$ ./read_more.sh</a></div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     TESTIMONIALS
+────────────────────────────────────────────────────── -->
+<section id="testimonials" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// TESTIMONIALS</span>
+      <div class="section-cmd">$ cat ~/testimonials/reviews.json <span class="c-dim">// Feedback</span></div>
+    </div>
+    <div class="testi-grid">
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <blockquote>"Harjinder's dedication to learning and his methodical approach to AD exploitation is impressive for someone at his stage. He approached our internal CTF with the mindset of a seasoned professional."</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar">MK</div>
+          <div><div class="testi-name">Mentor, Cynox Security LLP</div><div class="testi-role c-dim">Security Lead</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <blockquote>"Sharp analytical skills and a genuine passion for cybersecurity. Harjinder consistently went beyond the assigned scope to understand the underlying mechanisms of each vulnerability."</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar">PR</div>
+          <div><div class="testi-name">Senior Analyst, CyberYaan</div><div class="testi-role c-dim">Security Analyst</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★☆</div>
+        <blockquote>"A committed and technically sound intern. His understanding of digital forensics workflows and evidence handling was solid. Looking forward to seeing his progression as he pursues CPTS."</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar">GH</div>
+          <div><div class="testi-name">Supervisor, GPCSSI</div><div class="testi-role c-dim">Haryana Police Cyber Cell</div></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────
+     CONTACT
+────────────────────────────────────────────────────── -->
+<section id="contact" class="section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-comment">// CONTACT</span>
+      <div class="section-cmd">$ ssh harjinder@portfolio.local</div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-left">
+        <div class="contact-identity">
+          <div class="ci-comment">// IDENTITY</div>
+          <div class="ci-name">HARJINDER SINGH</div>
+          <div class="ci-title c-cyan">Penetration Tester · Security Analyst</div>
+          <div class="ci-sub c-dim">Trainee @ Cynox Security LLP · Intern @ CyberYaan & GPCSSI</div>
+          <div class="ci-location">📍 Ludhiana, Punjab, India</div>
+          <div class="social-links">
+            <a href="https://github.com/Harjinder4" target="_blank" class="social-link">
+              <span class="social-icon">GH</span> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/h4rj1nd3r51ngh/" target="_blank" class="social-link">
+              <span class="social-icon">LI</span> LinkedIn
+            </a>
+            <a href="https://tryhackme.com/p/harjinder.khalsa04" target="_blank" class="social-link">
+              <span class="social-icon">THM</span> TryHackMe
+            </a>
+            <a href="mailto:harjinder.khalsa4@gmail.com" class="social-link">
+              <span class="social-icon">📧</span> Email
+            </a>
+          </div>
+          <div class="sys-status">
+            <div class="ss-row"><span class="ss-key">ENCRYPTION</span><span class="ss-val c-green">AES-256-GCM</span></div>
+            <div class="ss-row"><span class="ss-key">SESSION</span><span class="ss-val c-green">ACTIVE</span></div>
+            <div class="ss-row"><span class="ss-key">UPTIME</span><span class="ss-val">3+ YRS</span></div>
+            <div class="ss-row"><span class="ss-key">STATUS</span><span class="ss-val c-cyan">VERIFIED · WHITE HAT</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-right">
+        <form class="contact-form" id="contact-form">
+          <div class="form-group">
+            <label class="form-label">$ name:</label>
+            <input type="text" class="form-input" placeholder="your name..." required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">$ email:</label>
+            <input type="email" class="form-input" placeholder="your@email.com" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">$ subject:</label>
+            <input type="text" class="form-input" placeholder="pentest inquiry / collaboration..." required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">$ message:</label>
+            <textarea class="form-input form-textarea" rows="5" placeholder="type your message..." required></textarea>
+          </div>
+          <button type="submit" class="btn-terminal full-width">$ ./send_message.sh</button>
+          <div id="form-status" class="form-status hidden"></div>
+        </form>
+      </div>
+    </div>
+    <div class="eof">─────────────────────────────── EOF ───────────────────────────────</div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span>root@h4rj1nd3r51ngh ~ © 2026 | Built with HTML · CSS · JS + terminal aesthetics</span>
+    <span class="c-green">SECURE</span>
+    <button class="btn-small" onclick="window.scrollTo({top:0,behavior:'smooth'})">scroll --top</button>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
