@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Windows Defender — Control Cheat Sheet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141716;
+    --surface2: #1a1d1b;
+    --border: #2a2e2c;
+    --border2: #353a37;
+    --accent: #00e5a0;
+    --accent-dim: #00e5a020;
+    --accent2: #ff6b35;
+    --accent2-dim: #ff6b3515;
+    --warn: #f5c518;
+    --warn-dim: #f5c51815;
+    --text: #e8ede9;
+    --text2: #8a9590;
+    --text3: #5a6560;
+    --red: #ff4d4d;
+    --red-dim: #ff4d4d15;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header-left h1 {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    border-radius: 3px;
+  }
+
+  /* Section */
+  .section { margin-bottom: 40px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-header h2 {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .section-header .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* Command card */
+  .cmd-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .cmd-card-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cmd-card-header .label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+  .cmd-card-header .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .tag-cmd { background: var(--accent2-dim); color: var(--accent2); border: 1px solid var(--accent2)40; }
+  .tag-ps { background: #3b5bdb20; color: #7aadff; border: 1px solid #7aadff30; }
+  .tag-both { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent)40; }
+  .tag-off { background: var(--red-dim); color: var(--red); border: 1px solid var(--red)40; }
+  .tag-on { background: #00e5a020; color: var(--accent); border: 1px solid var(--accent)40; }
+
+  .cmd-body {
+    padding: 12px 14px;
+  }
+  .cmd-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--surface2);
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    word-break: break-all;
+    line-height: 1.7;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+  .cmd-text:hover { border-color: var(--accent); }
+  .cmd-text::after {
+    content: 'click to copy';
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    font-size: 10px;
+    color: var(--text3);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .cmd-text:hover::after { opacity: 1; }
+  .cmd-text.copied { border-color: var(--accent) !important; }
+  .cmd-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* Key-value reference */
+  .kv-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .kv-table th {
+    text-align: left;
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .kv-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+  }
+  .kv-table tr:last-child td { border-bottom: none; }
+  .kv-table td:first-child { color: var(--accent); font-weight: 600; }
+  .kv-table td:nth-child(2) { color: var(--warn); }
+  .kv-table tr:hover td { background: var(--surface2); }
+
+  /* Tip cards */
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .tip-card.warn { border-left: 3px solid var(--warn); background: var(--warn-dim); }
+  .tip-card.danger { border-left: 3px solid var(--red); background: var(--red-dim); }
+  .tip-card.info { border-left: 3px solid var(--accent); background: var(--accent-dim); }
+  .tip-card h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+  .tip-card.warn h3 { color: var(--warn); }
+  .tip-card.danger h3 { color: var(--red); }
+  .tip-card.info h3 { color: var(--accent); }
+  .tip-card p, .tip-card li {
+    font-size: 12.5px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .tip-card ul { padding-left: 14px; }
+  .tip-card li { margin-bottom: 4px; }
+
+  /* Opsec */
+  .opsec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .opsec-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .opsec-num {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--border2);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .opsec-item h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .opsec-item p {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.55;
+  }
+
+  /* Full-width command */
+  .full-cmd {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .full-cmd-header {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .full-cmd-header span {
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 500;
+  }
+  .full-cmd pre {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    padding: 12px 14px;
+    overflow-x: auto;
+    line-height: 1.7;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .full-cmd pre:hover { background: var(--surface2); }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-top: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer p { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+  /* Highlight in mono */
+  .hl-green { color: var(--accent); }
+  .hl-orange { color: var(--accent2); }
+  .hl-yellow { color: var(--warn); }
+  .hl-red { color: var(--red); }
+
+  @media print {
+    body { background: white; color: #111; padding: 24px; }
+    .cmd-text::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Windows Defender — Control Cheat Sheet</h1>
+    <p>Real-time monitoring · Sample submission · Tamper protection · OpSec</p>
+  </div>
+  <span class="badge">Windows 10/11 · Admin required</span>
+</div>
+
+<!-- DISABLE SECTION -->
+<div class="section">
+  <div class="section-header">
+    <h2>Disable</h2>
+    <div class="line"></div>
+    <span class="tag tag-off">OFF</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Real-time monitoring</span>
+        <span class="tag tag-cmd">CMD</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f</div>
+        <p class="cmd-desc">Sets registry value to 1 — stops active file scanning.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Sample submission</span>
+        <span class="tag tag-cmd">CMD</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v SubmitSamplesConsent /t REG_DWORD /d 2 /f</div>
+        <p class="cmd-desc">Value 2 = NeverSend. Stops files being uploaded to Microsoft.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Tamper protection</span>
+        <span class="tag tag-cmd">CMD</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v TamperProtection /t REG_DWORD /d 4 /f</div>
+        <p class="cmd-desc">Value 4 = disabled. Must turn off in Security UI first if blocked.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Real-time monitoring</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Set-MpPreference -DisableRealtimeMonitoring $true</div>
+        <p class="cmd-desc">PowerShell native cmdlet. Simpler and easier to script.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Sample submission</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Set-MpPreference -SubmitSamplesConsent NeverSend</div>
+        <p class="cmd-desc">Cleaner syntax; same effect as registry value 2.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Tamper protection</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" -Name "TamperProtection" -Value 4</div>
+        <p class="cmd-desc">Registry write via PowerShell. Same key as CMD version.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMBINED DISABLE -->
+<div class="section">
+  <div class="section-header">
+    <h2>Combined — disable all at once</h2>
+    <div class="line"></div>
+  </div>
+  <div class="full-cmd">
+    <div class="full-cmd-header">
+      <span class="tag tag-cmd">CMD</span>
+      <span>Paste into an elevated Command Prompt</span>
+    </div>
+    <pre onclick="copyText(this)">reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f && reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v SubmitSamplesConsent /t REG_DWORD /d 2 /f && reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v TamperProtection /t REG_DWORD /d 4 /f</pre>
+  </div>
+  <div class="full-cmd">
+    <div class="full-cmd-header">
+      <span class="tag tag-ps">PS</span>
+      <span>Paste into an elevated PowerShell window</span>
+    </div>
+    <pre onclick="copyText(this)">Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -SubmitSamplesConsent NeverSend; Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" -Name "TamperProtection" -Value 5</pre>
+  </div>
+</div>
+
+<!-- RE-ENABLE SECTION -->
+<div class="section">
+  <div class="section-header">
+    <h2>Re-enable</h2>
+    <div class="line"></div>
+    <span class="tag tag-on">ON</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Real-time monitoring</span>
+        <span class="tag tag-cmd">CMD</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 0 /f</div>
+        <p class="cmd-desc">Flip value back to 0 to restore scanning.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Sample submission</span>
+        <span class="tag tag-cmd">CMD</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v SubmitSamplesConsent /t REG_DWORD /d 1 /f</div>
+        <p class="cmd-desc">Value 1 = SendSafeSamples (default behaviour).</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Tamper protection</span>
+        <span class="tag tag-cmd">CMD</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v TamperProtection /t REG_DWORD /d 5 /f</div>
+        <p class="cmd-desc">Value 5 = enabled. Defender will re-lock itself.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Real-time monitoring</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Set-MpPreference -DisableRealtimeMonitoring $false</div>
+        <p class="cmd-desc">Boolean false restores default on state.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Sample submission</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Set-MpPreference -SubmitSamplesConsent SendSafeSamples</div>
+        <p class="cmd-desc">Restores automatic submission of safe samples.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Tamper protection</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" -Name "TamperProtection" -Value 5</div>
+        <p class="cmd-desc">Re-enables tamper protection via registry.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTRY REFERENCE -->
+<div class="section">
+  <div class="section-header">
+    <h2>Registry value reference</h2>
+    <div class="line"></div>
+  </div>
+  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden;">
+    <table class="kv-table">
+      <thead>
+        <tr>
+          <th>Setting</th>
+          <th>Value</th>
+          <th>Meaning</th>
+          <th>Registry key</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DisableRealtimeMonitoring</td>
+          <td>0</td>
+          <td>Enabled (scanning ON)</td>
+          <td style="color:var(--text3); font-size:11px;">…\Real-Time Protection</td>
+        </tr>
+        <tr>
+          <td>DisableRealtimeMonitoring</td>
+          <td>1</td>
+          <td>Disabled (scanning OFF)</td>
+          <td style="color:var(--text3); font-size:11px;">…\Real-Time Protection</td>
+        </tr>
+        <tr>
+          <td>SubmitSamplesConsent</td>
+          <td>0</td>
+          <td>Always prompt user</td>
+          <td style="color:var(--text3); font-size:11px;">…\Spynet</td>
+        </tr>
+        <tr>
+          <td>SubmitSamplesConsent</td>
+          <td>1</td>
+          <td>Send safe samples (default)</td>
+          <td style="color:var(--text3); font-size:11px;">…\Spynet</td>
+        </tr>
+        <tr>
+          <td>SubmitSamplesConsent</td>
+          <td>2</td>
+          <td>Never send anything</td>
+          <td style="color:var(--text3); font-size:11px;">…\Spynet</td>
+        </tr>
+        <tr>
+          <td>SubmitSamplesConsent</td>
+          <td>3</td>
+          <td>Send all samples silently</td>
+          <td style="color:var(--text3); font-size:11px;">…\Spynet</td>
+        </tr>
+        <tr>
+          <td>TamperProtection</td>
+          <td>4</td>
+          <td>Tamper protection OFF</td>
+          <td style="color:var(--text3); font-size:11px;">…\Windows Defender\Features</td>
+        </tr>
+        <tr>
+          <td>TamperProtection</td>
+          <td>5</td>
+          <td>Tamper protection ON (default)</td>
+          <td style="color:var(--text3); font-size:11px;">…\Windows Defender\Features</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- OPSEC TIPS -->
+<div class="section">
+  <div class="section-header">
+    <h2>OpSec &amp; general tips</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="opsec-grid">
+    <div class="opsec-item">
+      <div class="opsec-num">01</div>
+      <div>
+        <h3>Tamper protection blocks everything</h3>
+        <p>Registry writes and Set-MpPreference will silently fail or be rolled back while tamper protection is active. Always disable it first — either from Windows Security UI (Settings → Virus &amp; threat protection → Manage settings) or via the registry key, if already unlocked.</p>
+      </div>
+    </div>
+
+    <div class="opsec-item">
+      <div class="opsec-num">02</div>
+      <div>
+        <h3>Always run as Administrator</h3>
+        <p>Every command here requires an elevated session. If you get "Access denied" or the setting reverts instantly, you are not running as admin. Right-click CMD or PowerShell → "Run as administrator" before pasting.</p>
+      </div>
+    </div>
+
+    <div class="opsec-item">
+      <div class="opsec-num">03</div>
+      <div>
+        <h3>Windows Update can re-enable everything</h3>
+        <p>A Windows Defender definition or platform update can silently reset your registry values and re-enable tamper protection. After any update, verify your settings with <code style="font-family:var(--mono); font-size:11px; color:var(--accent)">Get-MpPreference</code> in PowerShell.</p>
+      </div>
+    </div>
+
+    <div class="opsec-item">
+      <div class="opsec-num">04</div>
+      <div>
+        <h3>Policy path vs non-policy path</h3>
+        <p>The <code style="font-family:var(--mono); font-size:11px; color:var(--accent)">…\Policies\Microsoft\Windows Defender</code> path takes precedence over <code style="font-family:var(--mono); font-size:11px; color:var(--accent)">…\Microsoft\Windows Defender</code> (non-policy). If changes aren't sticking, check both keys — a policy key override may be winning.</p>
+      </div>
+    </div>
+
+    <div class="opsec-item">
+      <div class="opsec-num">05</div>
+      <div>
+        <h3>Verify with Get-MpPreference</h3>
+        <p>Run <code style="font-family:var(--mono); font-size:11px; color:var(--accent)">Get-MpPreference | Select DisableRealtimeMonitoring, SubmitSamplesConsent</code> in PowerShell after making changes to confirm they actually applied and weren't silently rejected.</p>
+      </div>
+    </div>
+
+    <div class="opsec-item">
+      <div class="opsec-num">06</div>
+      <div>
+        <h3>Sample submission ≠ cloud protection</h3>
+        <p>Disabling sample submission stops file uploads, but cloud-delivered protection (MAPS) is a separate toggle: <code style="font-family:var(--mono); font-size:11px; color:var(--accent)">Set-MpPreference -MAPSReporting Disabled</code>. Both need to be off to fully stop outbound telemetry to Microsoft.</p>
+      </div>
+    </div>
+
+    <div class="opsec-item">
+      <div class="opsec-num">07</div>
+      <div>
+        <h3>Add exclusions instead of disabling</h3>
+        <p>For most dev/testing scenarios, adding a folder exclusion is less risky than disabling Defender entirely: <code style="font-family:var(--mono); font-size:11px; color:var(--accent)">Add-MpPreference -ExclusionPath "C:\YourFolder"</code>. Leaves protection active everywhere else.</p>
+      </div>
+    </div>
+
+    <div class="opsec-item">
+      <div class="opsec-num">08</div>
+      <div>
+        <h3>Domain-joined machines may be GPO-managed</h3>
+        <p>On corporate or domain-joined machines, Group Policy can override every registry key here. Changes will apply but revert on the next GPO refresh cycle (every ~90 min). Check <code style="font-family:var(--mono); font-size:11px; color:var(--accent)">gpresult /h report.html</code> to see applied policies.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WARNINGS -->
+<div class="section">
+  <div class="section-header">
+    <h2>Important warnings</h2>
+    <div class="line"></div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+    <div class="tip-card danger">
+      <h3>⚠ Re-enable when done</h3>
+      <p>Leaving Defender disabled is a real security risk. Run the re-enable commands as soon as your task is complete. Disable only for as long as you need.</p>
+    </div>
+    <div class="tip-card warn">
+      <h3>Event log records changes</h3>
+      <p>Every Defender state change is logged in Windows Event Viewer under <em>Applications and Services → Microsoft → Windows → Windows Defender → Operational</em>. The log can be cleared with: <code style="font-family:var(--mono); font-size:11px;">wevtutil cl "Microsoft-Windows-Windows Defender/Operational"</code></p>
+    </div>
+    <div class="tip-card info">
+      <h3>Check status at any time</h3>
+      <p>Use <code style="font-family:var(--mono); font-size:11px;">Get-MpComputerStatus</code> in PowerShell for a full status report including RealTimeProtectionEnabled, AntivirusEnabled, TamperProtectionSource, and more.</p>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK REF -->
+<div class="section">
+  <div class="section-header">
+    <h2>Bonus — useful diagnostic commands</h2>
+    <div class="line"></div>
+  </div>
+  <div class="grid-2">
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Check full Defender status</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Get-MpComputerStatus | Select RealTimeProtectionEnabled, AntivirusEnabled, TamperProtectionSource, AMRunningMode</div>
+        <p class="cmd-desc">Shows live state of all major protection features.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Check current preferences</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Get-MpPreference | Select DisableRealtimeMonitoring, SubmitSamplesConsent, MAPSReporting, ExclusionPath</div>
+        <p class="cmd-desc">Verify your changes actually applied.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Add folder exclusion</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Add-MpPreference -ExclusionPath "C:\Path\To\Folder"</div>
+        <p class="cmd-desc">Safer than full disable — only excludes a specific folder.</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="cmd-card-header">
+        <span class="label">Disable cloud protection (MAPS)</span>
+        <span class="tag tag-ps">PS</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-text" onclick="copyText(this)">Set-MpPreference -MAPSReporting Disabled</div>
+        <p class="cmd-desc">Stops cloud lookups separately from sample submission.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Windows Defender Control Cheat Sheet — Windows 10 / 11</p>
+  <p>All commands require elevated (Administrator) privileges</p>
+</div>
+
+<script>
+function copyText(el) {
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text.trim()).then(() => {
+    const orig = el.style.borderColor;
+    el.style.borderColor = '#00e5a0';
+    el.style.color = '#00e5a0';
+    setTimeout(() => {
+      el.style.borderColor = '';
+      el.style.color = '';
+    }, 1000);
+  });
+}
+</script>
+</body>
+</html>
